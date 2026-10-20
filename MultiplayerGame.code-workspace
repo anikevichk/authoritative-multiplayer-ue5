@@ -37,7 +37,7 @@
 					"MultiplayerGame",
 					"Win64",
 					"Debug",
-					"C:\\Users\\Katarzyna\\Documents\\Unreal Projects\\MultiplayerGame\\MultiplayerGame.uproject",
+					"C:\\Users\\Katarzyna\\Documents\\Unreal Projects\\MultiplayerGame 5.6\\MultiplayerGame.uproject",
 					"-waitmutex"
 				],
 				"problemMatcher": "$msCompile",
@@ -54,7 +54,7 @@
 					"MultiplayerGame",
 					"Win64",
 					"Debug",
-					"C:\\Users\\Katarzyna\\Documents\\Unreal Projects\\MultiplayerGame\\MultiplayerGame.uproject",
+					"C:\\Users\\Katarzyna\\Documents\\Unreal Projects\\MultiplayerGame 5.6\\MultiplayerGame.uproject",
 					"-waitmutex"
 				],
 				"problemMatcher": "$msCompile",
@@ -74,7 +74,7 @@
 					"MultiplayerGame",
 					"Win64",
 					"Debug",
-					"C:\\Users\\Katarzyna\\Documents\\Unreal Projects\\MultiplayerGame\\MultiplayerGame.uproject",
+					"C:\\Users\\Katarzyna\\Documents\\Unreal Projects\\MultiplayerGame 5.6\\MultiplayerGame.uproject",
 					"-waitmutex"
 				],
 				"problemMatcher": "$msCompile",
@@ -91,7 +91,7 @@
 					"MultiplayerGame",
 					"Win64",
 					"DebugGame",
-					"C:\\Users\\Katarzyna\\Documents\\Unreal Projects\\MultiplayerGame\\MultiplayerGame.uproject",
+					"C:\\Users\\Katarzyna\\Documents\\Unreal Projects\\MultiplayerGame 5.6\\MultiplayerGame.uproject",
 					"-waitmutex"
 				],
 				"problemMatcher": "$msCompile",
@@ -108,7 +108,7 @@
 					"MultiplayerGame",
 					"Win64",
 					"DebugGame",
-					"C:\\Users\\Katarzyna\\Documents\\Unreal Projects\\MultiplayerGame\\MultiplayerGame.uproject",
+					"C:\\Users\\Katarzyna\\Documents\\Unreal Projects\\MultiplayerGame 5.6\\MultiplayerGame.uproject",
 					"-waitmutex"
 				],
 				"problemMatcher": "$msCompile",
@@ -128,7 +128,7 @@
 					"MultiplayerGame",
 					"Win64",
 					"DebugGame",
-					"C:\\Users\\Katarzyna\\Documents\\Unreal Projects\\MultiplayerGame\\MultiplayerGame.uproject",
+					"C:\\Users\\Katarzyna\\Documents\\Unreal Projects\\MultiplayerGame 5.6\\MultiplayerGame.uproject",
 					"-waitmutex"
 				],
 				"problemMatcher": "$msCompile",
@@ -145,7 +145,7 @@
 					"MultiplayerGame",
 					"Win64",
 					"Development",
-					"C:\\Users\\Katarzyna\\Documents\\Unreal Projects\\MultiplayerGame\\MultiplayerGame.uproject",
+					"C:\\Users\\Katarzyna\\Documents\\Unreal Projects\\MultiplayerGame 5.6\\MultiplayerGame.uproject",
 					"-waitmutex"
 				],
 				"problemMatcher": "$msCompile",
@@ -162,7 +162,7 @@
 					"MultiplayerGame",
 					"Win64",
 					"Development",
-					"C:\\Users\\Katarzyna\\Documents\\Unreal Projects\\MultiplayerGame\\MultiplayerGame.uproject",
+					"C:\\Users\\Katarzyna\\Documents\\Unreal Projects\\MultiplayerGame 5.6\\MultiplayerGame.uproject",
 					"-waitmutex"
 				],
 				"problemMatcher": "$msCompile",
@@ -182,7 +182,7 @@
 					"MultiplayerGame",
 					"Win64",
 					"Development",
-					"C:\\Users\\Katarzyna\\Documents\\Unreal Projects\\MultiplayerGame\\MultiplayerGame.uproject",
+					"C:\\Users\\Katarzyna\\Documents\\Unreal Projects\\MultiplayerGame 5.6\\MultiplayerGame.uproject",
 					"-waitmutex"
 				],
 				"problemMatcher": "$msCompile",
@@ -199,7 +199,7 @@
 					"MultiplayerGame",
 					"Win64",
 					"Test",
-					"C:\\Users\\Katarzyna\\Documents\\Unreal Projects\\MultiplayerGame\\MultiplayerGame.uproject",
+					"C:\\Users\\Katarzyna\\Documents\\Unreal Projects\\MultiplayerGame 5.6\\MultiplayerGame.uproject",
 					"-waitmutex"
 				],
 				"problemMatcher": "$msCompile",
@@ -216,7 +216,7 @@
 					"MultiplayerGame",
 					"Win64",
 					"Test",
-					"C:\\Users\\Katarzyna\\Documents\\Unreal Projects\\MultiplayerGame\\MultiplayerGame.uproject",
+					"C:\\Users\\Katarzyna\\Documents\\Unreal Projects\\MultiplayerGame 5.6\\MultiplayerGame.uproject",
 					"-waitmutex"
 				],
 				"problemMatcher": "$msCompile",
@@ -236,7 +236,7 @@
 					"MultiplayerGame",
 					"Win64",
 					"Test",
-					"C:\\Users\\Katarzyna\\Documents\\Unreal Projects\\MultiplayerGame\\MultiplayerGame.uproject",
+					"C:\\Users\\Katarzyna\\Documents\\Unreal Projects\\MultiplayerGame 5.6\\MultiplayerGame.uproject",
 					"-waitmutex"
 				],
 				"problemMatcher": "$msCompile",
@@ -253,7 +253,7 @@
 					"MultiplayerGame",
 					"Win64",
 					"Shipping",
-					"C:\\Users\\Katarzyna\\Documents\\Unreal Projects\\MultiplayerGame\\MultiplayerGame.uproject",
+					"C:\\Users\\Katarzyna\\Documents\\Unreal Projects\\MultiplayerGame 5.6\\MultiplayerGame.uproject",
 					"-waitmutex"
 				],
 				"problemMatcher": "$msCompile",
@@ -270,7 +270,7 @@
 					"MultiplayerGame",
 					"Win64",
 					"Shipping",
-					"C:\\Users\\Katarzyna\\Documents\\Unreal Projects\\MultiplayerGame\\MultiplayerGame.uproject",
+					"C:\\Users\\Katarzyna\\Documents\\Unreal Projects\\MultiplayerGame 5.6\\MultiplayerGame.uproject",
 					"-waitmutex"
 				],
 				"problemMatcher": "$msCompile",
@@ -290,7 +290,7 @@
 					"MultiplayerGame",
 					"Win64",
 					"Shipping",
-					"C:\\Users\\Katarzyna\\Documents\\Unreal Projects\\MultiplayerGame\\MultiplayerGame.uproject",
+					"C:\\Users\\Katarzyna\\Documents\\Unreal Projects\\MultiplayerGame 5.6\\MultiplayerGame.uproject",
 					"-waitmutex"
 				],
 				"problemMatcher": "$msCompile",
@@ -307,7 +307,7 @@
 					"MultiplayerGameEditor",
 					"Win64",
 					"Debug",
-					"C:\\Users\\Katarzyna\\Documents\\Unreal Projects\\MultiplayerGame\\MultiplayerGame.uproject",
+					"C:\\Users\\Katarzyna\\Documents\\Unreal Projects\\MultiplayerGame 5.6\\MultiplayerGame.uproject",
 					"-waitmutex"
 				],
 				"problemMatcher": "$msCompile",
@@ -324,7 +324,7 @@
 					"MultiplayerGameEditor",
 					"Win64",
 					"Debug",
-					"C:\\Users\\Katarzyna\\Documents\\Unreal Projects\\MultiplayerGame\\MultiplayerGame.uproject",
+					"C:\\Users\\Katarzyna\\Documents\\Unreal Projects\\MultiplayerGame 5.6\\MultiplayerGame.uproject",
 					"-waitmutex"
 				],
 				"problemMatcher": "$msCompile",
@@ -344,7 +344,7 @@
 					"MultiplayerGameEditor",
 					"Win64",
 					"Debug",
-					"C:\\Users\\Katarzyna\\Documents\\Unreal Projects\\MultiplayerGame\\MultiplayerGame.uproject",
+					"C:\\Users\\Katarzyna\\Documents\\Unreal Projects\\MultiplayerGame 5.6\\MultiplayerGame.uproject",
 					"-waitmutex"
 				],
 				"problemMatcher": "$msCompile",
@@ -361,7 +361,7 @@
 					"MultiplayerGameEditor",
 					"Win64",
 					"DebugGame",
-					"C:\\Users\\Katarzyna\\Documents\\Unreal Projects\\MultiplayerGame\\MultiplayerGame.uproject",
+					"C:\\Users\\Katarzyna\\Documents\\Unreal Projects\\MultiplayerGame 5.6\\MultiplayerGame.uproject",
 					"-waitmutex"
 				],
 				"problemMatcher": "$msCompile",
@@ -378,7 +378,7 @@
 					"MultiplayerGameEditor",
 					"Win64",
 					"DebugGame",
-					"C:\\Users\\Katarzyna\\Documents\\Unreal Projects\\MultiplayerGame\\MultiplayerGame.uproject",
+					"C:\\Users\\Katarzyna\\Documents\\Unreal Projects\\MultiplayerGame 5.6\\MultiplayerGame.uproject",
 					"-waitmutex"
 				],
 				"problemMatcher": "$msCompile",
@@ -398,7 +398,7 @@
 					"MultiplayerGameEditor",
 					"Win64",
 					"DebugGame",
-					"C:\\Users\\Katarzyna\\Documents\\Unreal Projects\\MultiplayerGame\\MultiplayerGame.uproject",
+					"C:\\Users\\Katarzyna\\Documents\\Unreal Projects\\MultiplayerGame 5.6\\MultiplayerGame.uproject",
 					"-waitmutex"
 				],
 				"problemMatcher": "$msCompile",
@@ -415,7 +415,7 @@
 					"MultiplayerGameEditor",
 					"Win64",
 					"Development",
-					"C:\\Users\\Katarzyna\\Documents\\Unreal Projects\\MultiplayerGame\\MultiplayerGame.uproject",
+					"C:\\Users\\Katarzyna\\Documents\\Unreal Projects\\MultiplayerGame 5.6\\MultiplayerGame.uproject",
 					"-waitmutex"
 				],
 				"problemMatcher": "$msCompile",
@@ -432,7 +432,7 @@
 					"MultiplayerGameEditor",
 					"Win64",
 					"Development",
-					"C:\\Users\\Katarzyna\\Documents\\Unreal Projects\\MultiplayerGame\\MultiplayerGame.uproject",
+					"C:\\Users\\Katarzyna\\Documents\\Unreal Projects\\MultiplayerGame 5.6\\MultiplayerGame.uproject",
 					"-waitmutex"
 				],
 				"problemMatcher": "$msCompile",
@@ -452,7 +452,7 @@
 					"MultiplayerGameEditor",
 					"Win64",
 					"Development",
-					"C:\\Users\\Katarzyna\\Documents\\Unreal Projects\\MultiplayerGame\\MultiplayerGame.uproject",
+					"C:\\Users\\Katarzyna\\Documents\\Unreal Projects\\MultiplayerGame 5.6\\MultiplayerGame.uproject",
 					"-waitmutex"
 				],
 				"problemMatcher": "$msCompile",
@@ -469,7 +469,7 @@
 					"MultiplayerGameServer",
 					"Win64",
 					"Debug",
-					"C:\\Users\\Katarzyna\\Documents\\Unreal Projects\\MultiplayerGame\\MultiplayerGame.uproject",
+					"C:\\Users\\Katarzyna\\Documents\\Unreal Projects\\MultiplayerGame 5.6\\MultiplayerGame.uproject",
 					"-waitmutex"
 				],
 				"problemMatcher": "$msCompile",
@@ -486,7 +486,7 @@
 					"MultiplayerGameServer",
 					"Win64",
 					"Debug",
-					"C:\\Users\\Katarzyna\\Documents\\Unreal Projects\\MultiplayerGame\\MultiplayerGame.uproject",
+					"C:\\Users\\Katarzyna\\Documents\\Unreal Projects\\MultiplayerGame 5.6\\MultiplayerGame.uproject",
 					"-waitmutex"
 				],
 				"problemMatcher": "$msCompile",
@@ -506,7 +506,7 @@
 					"MultiplayerGameServer",
 					"Win64",
 					"Debug",
-					"C:\\Users\\Katarzyna\\Documents\\Unreal Projects\\MultiplayerGame\\MultiplayerGame.uproject",
+					"C:\\Users\\Katarzyna\\Documents\\Unreal Projects\\MultiplayerGame 5.6\\MultiplayerGame.uproject",
 					"-waitmutex"
 				],
 				"problemMatcher": "$msCompile",
@@ -523,7 +523,7 @@
 					"MultiplayerGameServer",
 					"Win64",
 					"DebugGame",
-					"C:\\Users\\Katarzyna\\Documents\\Unreal Projects\\MultiplayerGame\\MultiplayerGame.uproject",
+					"C:\\Users\\Katarzyna\\Documents\\Unreal Projects\\MultiplayerGame 5.6\\MultiplayerGame.uproject",
 					"-waitmutex"
 				],
 				"problemMatcher": "$msCompile",
@@ -540,7 +540,7 @@
 					"MultiplayerGameServer",
 					"Win64",
 					"DebugGame",
-					"C:\\Users\\Katarzyna\\Documents\\Unreal Projects\\MultiplayerGame\\MultiplayerGame.uproject",
+					"C:\\Users\\Katarzyna\\Documents\\Unreal Projects\\MultiplayerGame 5.6\\MultiplayerGame.uproject",
 					"-waitmutex"
 				],
 				"problemMatcher": "$msCompile",
@@ -560,7 +560,7 @@
 					"MultiplayerGameServer",
 					"Win64",
 					"DebugGame",
-					"C:\\Users\\Katarzyna\\Documents\\Unreal Projects\\MultiplayerGame\\MultiplayerGame.uproject",
+					"C:\\Users\\Katarzyna\\Documents\\Unreal Projects\\MultiplayerGame 5.6\\MultiplayerGame.uproject",
 					"-waitmutex"
 				],
 				"problemMatcher": "$msCompile",
@@ -577,7 +577,7 @@
 					"MultiplayerGameServer",
 					"Win64",
 					"Development",
-					"C:\\Users\\Katarzyna\\Documents\\Unreal Projects\\MultiplayerGame\\MultiplayerGame.uproject",
+					"C:\\Users\\Katarzyna\\Documents\\Unreal Projects\\MultiplayerGame 5.6\\MultiplayerGame.uproject",
 					"-waitmutex"
 				],
 				"problemMatcher": "$msCompile",
@@ -594,7 +594,7 @@
 					"MultiplayerGameServer",
 					"Win64",
 					"Development",
-					"C:\\Users\\Katarzyna\\Documents\\Unreal Projects\\MultiplayerGame\\MultiplayerGame.uproject",
+					"C:\\Users\\Katarzyna\\Documents\\Unreal Projects\\MultiplayerGame 5.6\\MultiplayerGame.uproject",
 					"-waitmutex"
 				],
 				"problemMatcher": "$msCompile",
@@ -614,7 +614,7 @@
 					"MultiplayerGameServer",
 					"Win64",
 					"Development",
-					"C:\\Users\\Katarzyna\\Documents\\Unreal Projects\\MultiplayerGame\\MultiplayerGame.uproject",
+					"C:\\Users\\Katarzyna\\Documents\\Unreal Projects\\MultiplayerGame 5.6\\MultiplayerGame.uproject",
 					"-waitmutex"
 				],
 				"problemMatcher": "$msCompile",
@@ -631,7 +631,7 @@
 					"MultiplayerGameServer",
 					"Win64",
 					"Test",
-					"C:\\Users\\Katarzyna\\Documents\\Unreal Projects\\MultiplayerGame\\MultiplayerGame.uproject",
+					"C:\\Users\\Katarzyna\\Documents\\Unreal Projects\\MultiplayerGame 5.6\\MultiplayerGame.uproject",
 					"-waitmutex"
 				],
 				"problemMatcher": "$msCompile",
@@ -648,7 +648,7 @@
 					"MultiplayerGameServer",
 					"Win64",
 					"Test",
-					"C:\\Users\\Katarzyna\\Documents\\Unreal Projects\\MultiplayerGame\\MultiplayerGame.uproject",
+					"C:\\Users\\Katarzyna\\Documents\\Unreal Projects\\MultiplayerGame 5.6\\MultiplayerGame.uproject",
 					"-waitmutex"
 				],
 				"problemMatcher": "$msCompile",
@@ -668,7 +668,7 @@
 					"MultiplayerGameServer",
 					"Win64",
 					"Test",
-					"C:\\Users\\Katarzyna\\Documents\\Unreal Projects\\MultiplayerGame\\MultiplayerGame.uproject",
+					"C:\\Users\\Katarzyna\\Documents\\Unreal Projects\\MultiplayerGame 5.6\\MultiplayerGame.uproject",
 					"-waitmutex"
 				],
 				"problemMatcher": "$msCompile",
@@ -685,7 +685,7 @@
 					"MultiplayerGameServer",
 					"Win64",
 					"Shipping",
-					"C:\\Users\\Katarzyna\\Documents\\Unreal Projects\\MultiplayerGame\\MultiplayerGame.uproject",
+					"C:\\Users\\Katarzyna\\Documents\\Unreal Projects\\MultiplayerGame 5.6\\MultiplayerGame.uproject",
 					"-waitmutex"
 				],
 				"problemMatcher": "$msCompile",
@@ -702,7 +702,7 @@
 					"MultiplayerGameServer",
 					"Win64",
 					"Shipping",
-					"C:\\Users\\Katarzyna\\Documents\\Unreal Projects\\MultiplayerGame\\MultiplayerGame.uproject",
+					"C:\\Users\\Katarzyna\\Documents\\Unreal Projects\\MultiplayerGame 5.6\\MultiplayerGame.uproject",
 					"-waitmutex"
 				],
 				"problemMatcher": "$msCompile",
@@ -722,7 +722,7 @@
 					"MultiplayerGameServer",
 					"Win64",
 					"Shipping",
-					"C:\\Users\\Katarzyna\\Documents\\Unreal Projects\\MultiplayerGame\\MultiplayerGame.uproject",
+					"C:\\Users\\Katarzyna\\Documents\\Unreal Projects\\MultiplayerGame 5.6\\MultiplayerGame.uproject",
 					"-waitmutex"
 				],
 				"problemMatcher": "$msCompile",
@@ -739,7 +739,7 @@
 			{
 				"name": "Launch MultiplayerGame (Debug)",
 				"request": "launch",
-				"program": "C:\\Users\\Katarzyna\\Documents\\Unreal Projects\\MultiplayerGame\\Binaries\\Win64\\MultiplayerGame-Win64-Debug.exe",
+				"program": "C:\\Users\\Katarzyna\\Documents\\Unreal Projects\\MultiplayerGame 5.6\\Binaries\\Win64\\MultiplayerGame-Win64-Debug.exe",
 				"preLaunchTask": "MultiplayerGame Win64 Debug Build",
 				"args": [
 				],
@@ -749,14 +749,14 @@
 				"type": "cppvsdbg",
 				"visualizerFile": "C:\\UnrealEngine\\Engine\\Extras\\VisualStudioDebugging\\Unreal.natvis",
 				"sourceFileMap": {
-					"Z:\\UEVFS\\MultiplayerGame": "C:\\Users\\Katarzyna\\Documents\\Unreal Projects\\MultiplayerGame",
+					"Z:\\UEVFS\\MultiplayerGame 5.6": "C:\\Users\\Katarzyna\\Documents\\Unreal Projects\\MultiplayerGame 5.6",
 					"Z:\\UEVFS\\Root": "C:\\UnrealEngine"
 				}
 			},
 			{
 				"name": "Launch MultiplayerGame (DebugGame)",
 				"request": "launch",
-				"program": "C:\\Users\\Katarzyna\\Documents\\Unreal Projects\\MultiplayerGame\\Binaries\\Win64\\MultiplayerGame-Win64-DebugGame.exe",
+				"program": "C:\\Users\\Katarzyna\\Documents\\Unreal Projects\\MultiplayerGame 5.6\\Binaries\\Win64\\MultiplayerGame-Win64-DebugGame.exe",
 				"preLaunchTask": "MultiplayerGame Win64 DebugGame Build",
 				"args": [
 				],
@@ -766,14 +766,14 @@
 				"type": "cppvsdbg",
 				"visualizerFile": "C:\\UnrealEngine\\Engine\\Extras\\VisualStudioDebugging\\Unreal.natvis",
 				"sourceFileMap": {
-					"Z:\\UEVFS\\MultiplayerGame": "C:\\Users\\Katarzyna\\Documents\\Unreal Projects\\MultiplayerGame",
+					"Z:\\UEVFS\\MultiplayerGame 5.6": "C:\\Users\\Katarzyna\\Documents\\Unreal Projects\\MultiplayerGame 5.6",
 					"Z:\\UEVFS\\Root": "C:\\UnrealEngine"
 				}
 			},
 			{
 				"name": "Launch MultiplayerGame (Development)",
 				"request": "launch",
-				"program": "C:\\Users\\Katarzyna\\Documents\\Unreal Projects\\MultiplayerGame\\Binaries\\Win64\\MultiplayerGame.exe",
+				"program": "C:\\Users\\Katarzyna\\Documents\\Unreal Projects\\MultiplayerGame 5.6\\Binaries\\Win64\\MultiplayerGame.exe",
 				"preLaunchTask": "MultiplayerGame Win64 Development Build",
 				"args": [
 				],
@@ -783,14 +783,14 @@
 				"type": "cppvsdbg",
 				"visualizerFile": "C:\\UnrealEngine\\Engine\\Extras\\VisualStudioDebugging\\Unreal.natvis",
 				"sourceFileMap": {
-					"Z:\\UEVFS\\MultiplayerGame": "C:\\Users\\Katarzyna\\Documents\\Unreal Projects\\MultiplayerGame",
+					"Z:\\UEVFS\\MultiplayerGame 5.6": "C:\\Users\\Katarzyna\\Documents\\Unreal Projects\\MultiplayerGame 5.6",
 					"Z:\\UEVFS\\Root": "C:\\UnrealEngine"
 				}
 			},
 			{
 				"name": "Launch MultiplayerGame (Test)",
 				"request": "launch",
-				"program": "C:\\Users\\Katarzyna\\Documents\\Unreal Projects\\MultiplayerGame\\Binaries\\Win64\\MultiplayerGame-Win64-Test.exe",
+				"program": "C:\\Users\\Katarzyna\\Documents\\Unreal Projects\\MultiplayerGame 5.6\\Binaries\\Win64\\MultiplayerGame-Win64-Test.exe",
 				"preLaunchTask": "MultiplayerGame Win64 Test Build",
 				"args": [
 				],
@@ -800,14 +800,14 @@
 				"type": "cppvsdbg",
 				"visualizerFile": "C:\\UnrealEngine\\Engine\\Extras\\VisualStudioDebugging\\Unreal.natvis",
 				"sourceFileMap": {
-					"Z:\\UEVFS\\MultiplayerGame": "C:\\Users\\Katarzyna\\Documents\\Unreal Projects\\MultiplayerGame",
+					"Z:\\UEVFS\\MultiplayerGame 5.6": "C:\\Users\\Katarzyna\\Documents\\Unreal Projects\\MultiplayerGame 5.6",
 					"Z:\\UEVFS\\Root": "C:\\UnrealEngine"
 				}
 			},
 			{
 				"name": "Launch MultiplayerGame (Shipping)",
 				"request": "launch",
-				"program": "C:\\Users\\Katarzyna\\Documents\\Unreal Projects\\MultiplayerGame\\Binaries\\Win64\\MultiplayerGame-Win64-Shipping.exe",
+				"program": "C:\\Users\\Katarzyna\\Documents\\Unreal Projects\\MultiplayerGame 5.6\\Binaries\\Win64\\MultiplayerGame-Win64-Shipping.exe",
 				"preLaunchTask": "MultiplayerGame Win64 Shipping Build",
 				"args": [
 				],
@@ -817,7 +817,7 @@
 				"type": "cppvsdbg",
 				"visualizerFile": "C:\\UnrealEngine\\Engine\\Extras\\VisualStudioDebugging\\Unreal.natvis",
 				"sourceFileMap": {
-					"Z:\\UEVFS\\MultiplayerGame": "C:\\Users\\Katarzyna\\Documents\\Unreal Projects\\MultiplayerGame",
+					"Z:\\UEVFS\\MultiplayerGame 5.6": "C:\\Users\\Katarzyna\\Documents\\Unreal Projects\\MultiplayerGame 5.6",
 					"Z:\\UEVFS\\Root": "C:\\UnrealEngine"
 				}
 			},
@@ -827,7 +827,7 @@
 				"program": "C:\\UnrealEngine\\Engine\\Binaries\\Win64\\UnrealEditor-Win64-Debug.exe",
 				"preLaunchTask": "MultiplayerGameEditor Win64 Debug Build",
 				"args": [
-					"C:\\Users\\Katarzyna\\Documents\\Unreal Projects\\MultiplayerGame\\MultiplayerGame.uproject"
+					"C:\\Users\\Katarzyna\\Documents\\Unreal Projects\\MultiplayerGame 5.6\\MultiplayerGame.uproject"
 				],
 				"cwd": "C:\\UnrealEngine",
 				"stopAtEntry": false,
@@ -835,7 +835,7 @@
 				"type": "cppvsdbg",
 				"visualizerFile": "C:\\UnrealEngine\\Engine\\Extras\\VisualStudioDebugging\\Unreal.natvis",
 				"sourceFileMap": {
-					"Z:\\UEVFS\\MultiplayerGame": "C:\\Users\\Katarzyna\\Documents\\Unreal Projects\\MultiplayerGame",
+					"Z:\\UEVFS\\MultiplayerGame 5.6": "C:\\Users\\Katarzyna\\Documents\\Unreal Projects\\MultiplayerGame 5.6",
 					"Z:\\UEVFS\\Root": "C:\\UnrealEngine"
 				}
 			},
@@ -845,7 +845,7 @@
 				"program": "C:\\UnrealEngine\\Engine\\Binaries\\Win64\\UnrealEditor-Win64-DebugGame.exe",
 				"preLaunchTask": "MultiplayerGameEditor Win64 DebugGame Build",
 				"args": [
-					"C:\\Users\\Katarzyna\\Documents\\Unreal Projects\\MultiplayerGame\\MultiplayerGame.uproject"
+					"C:\\Users\\Katarzyna\\Documents\\Unreal Projects\\MultiplayerGame 5.6\\MultiplayerGame.uproject"
 				],
 				"cwd": "C:\\UnrealEngine",
 				"stopAtEntry": false,
@@ -853,7 +853,7 @@
 				"type": "cppvsdbg",
 				"visualizerFile": "C:\\UnrealEngine\\Engine\\Extras\\VisualStudioDebugging\\Unreal.natvis",
 				"sourceFileMap": {
-					"Z:\\UEVFS\\MultiplayerGame": "C:\\Users\\Katarzyna\\Documents\\Unreal Projects\\MultiplayerGame",
+					"Z:\\UEVFS\\MultiplayerGame 5.6": "C:\\Users\\Katarzyna\\Documents\\Unreal Projects\\MultiplayerGame 5.6",
 					"Z:\\UEVFS\\Root": "C:\\UnrealEngine"
 				}
 			},
@@ -863,7 +863,7 @@
 				"program": "C:\\UnrealEngine\\Engine\\Binaries\\Win64\\UnrealEditor.exe",
 				"preLaunchTask": "MultiplayerGameEditor Win64 Development Build",
 				"args": [
-					"C:\\Users\\Katarzyna\\Documents\\Unreal Projects\\MultiplayerGame\\MultiplayerGame.uproject"
+					"C:\\Users\\Katarzyna\\Documents\\Unreal Projects\\MultiplayerGame 5.6\\MultiplayerGame.uproject"
 				],
 				"cwd": "C:\\UnrealEngine",
 				"stopAtEntry": false,
@@ -871,14 +871,14 @@
 				"type": "cppvsdbg",
 				"visualizerFile": "C:\\UnrealEngine\\Engine\\Extras\\VisualStudioDebugging\\Unreal.natvis",
 				"sourceFileMap": {
-					"Z:\\UEVFS\\MultiplayerGame": "C:\\Users\\Katarzyna\\Documents\\Unreal Projects\\MultiplayerGame",
+					"Z:\\UEVFS\\MultiplayerGame 5.6": "C:\\Users\\Katarzyna\\Documents\\Unreal Projects\\MultiplayerGame 5.6",
 					"Z:\\UEVFS\\Root": "C:\\UnrealEngine"
 				}
 			},
 			{
 				"name": "Launch MultiplayerGameServer (Debug)",
 				"request": "launch",
-				"program": "C:\\Users\\Katarzyna\\Documents\\Unreal Projects\\MultiplayerGame\\Binaries\\Win64\\MultiplayerGameServer-Win64-Debug.exe",
+				"program": "C:\\Users\\Katarzyna\\Documents\\Unreal Projects\\MultiplayerGame 5.6\\Binaries\\Win64\\MultiplayerGameServer-Win64-Debug.exe",
 				"preLaunchTask": "MultiplayerGameServer Win64 Debug Build",
 				"args": [
 				],
@@ -888,14 +888,14 @@
 				"type": "cppvsdbg",
 				"visualizerFile": "C:\\UnrealEngine\\Engine\\Extras\\VisualStudioDebugging\\Unreal.natvis",
 				"sourceFileMap": {
-					"Z:\\UEVFS\\MultiplayerGame": "C:\\Users\\Katarzyna\\Documents\\Unreal Projects\\MultiplayerGame",
+					"Z:\\UEVFS\\MultiplayerGame 5.6": "C:\\Users\\Katarzyna\\Documents\\Unreal Projects\\MultiplayerGame 5.6",
 					"Z:\\UEVFS\\Root": "C:\\UnrealEngine"
 				}
 			},
 			{
 				"name": "Launch MultiplayerGameServer (DebugGame)",
 				"request": "launch",
-				"program": "C:\\Users\\Katarzyna\\Documents\\Unreal Projects\\MultiplayerGame\\Binaries\\Win64\\MultiplayerGameServer-Win64-DebugGame.exe",
+				"program": "C:\\Users\\Katarzyna\\Documents\\Unreal Projects\\MultiplayerGame 5.6\\Binaries\\Win64\\MultiplayerGameServer-Win64-DebugGame.exe",
 				"preLaunchTask": "MultiplayerGameServer Win64 DebugGame Build",
 				"args": [
 				],
@@ -905,14 +905,14 @@
 				"type": "cppvsdbg",
 				"visualizerFile": "C:\\UnrealEngine\\Engine\\Extras\\VisualStudioDebugging\\Unreal.natvis",
 				"sourceFileMap": {
-					"Z:\\UEVFS\\MultiplayerGame": "C:\\Users\\Katarzyna\\Documents\\Unreal Projects\\MultiplayerGame",
+					"Z:\\UEVFS\\MultiplayerGame 5.6": "C:\\Users\\Katarzyna\\Documents\\Unreal Projects\\MultiplayerGame 5.6",
 					"Z:\\UEVFS\\Root": "C:\\UnrealEngine"
 				}
 			},
 			{
 				"name": "Launch MultiplayerGameServer (Development)",
 				"request": "launch",
-				"program": "C:\\Users\\Katarzyna\\Documents\\Unreal Projects\\MultiplayerGame\\Binaries\\Win64\\MultiplayerGameServer.exe",
+				"program": "C:\\Users\\Katarzyna\\Documents\\Unreal Projects\\MultiplayerGame 5.6\\Binaries\\Win64\\MultiplayerGameServer.exe",
 				"preLaunchTask": "MultiplayerGameServer Win64 Development Build",
 				"args": [
 				],
@@ -922,14 +922,14 @@
 				"type": "cppvsdbg",
 				"visualizerFile": "C:\\UnrealEngine\\Engine\\Extras\\VisualStudioDebugging\\Unreal.natvis",
 				"sourceFileMap": {
-					"Z:\\UEVFS\\MultiplayerGame": "C:\\Users\\Katarzyna\\Documents\\Unreal Projects\\MultiplayerGame",
+					"Z:\\UEVFS\\MultiplayerGame 5.6": "C:\\Users\\Katarzyna\\Documents\\Unreal Projects\\MultiplayerGame 5.6",
 					"Z:\\UEVFS\\Root": "C:\\UnrealEngine"
 				}
 			},
 			{
 				"name": "Launch MultiplayerGameServer (Test)",
 				"request": "launch",
-				"program": "C:\\Users\\Katarzyna\\Documents\\Unreal Projects\\MultiplayerGame\\Binaries\\Win64\\MultiplayerGameServer-Win64-Test.exe",
+				"program": "C:\\Users\\Katarzyna\\Documents\\Unreal Projects\\MultiplayerGame 5.6\\Binaries\\Win64\\MultiplayerGameServer-Win64-Test.exe",
 				"preLaunchTask": "MultiplayerGameServer Win64 Test Build",
 				"args": [
 				],
@@ -939,14 +939,14 @@
 				"type": "cppvsdbg",
 				"visualizerFile": "C:\\UnrealEngine\\Engine\\Extras\\VisualStudioDebugging\\Unreal.natvis",
 				"sourceFileMap": {
-					"Z:\\UEVFS\\MultiplayerGame": "C:\\Users\\Katarzyna\\Documents\\Unreal Projects\\MultiplayerGame",
+					"Z:\\UEVFS\\MultiplayerGame 5.6": "C:\\Users\\Katarzyna\\Documents\\Unreal Projects\\MultiplayerGame 5.6",
 					"Z:\\UEVFS\\Root": "C:\\UnrealEngine"
 				}
 			},
 			{
 				"name": "Launch MultiplayerGameServer (Shipping)",
 				"request": "launch",
-				"program": "C:\\Users\\Katarzyna\\Documents\\Unreal Projects\\MultiplayerGame\\Binaries\\Win64\\MultiplayerGameServer-Win64-Shipping.exe",
+				"program": "C:\\Users\\Katarzyna\\Documents\\Unreal Projects\\MultiplayerGame 5.6\\Binaries\\Win64\\MultiplayerGameServer-Win64-Shipping.exe",
 				"preLaunchTask": "MultiplayerGameServer Win64 Shipping Build",
 				"args": [
 				],
@@ -956,7 +956,7 @@
 				"type": "cppvsdbg",
 				"visualizerFile": "C:\\UnrealEngine\\Engine\\Extras\\VisualStudioDebugging\\Unreal.natvis",
 				"sourceFileMap": {
-					"Z:\\UEVFS\\MultiplayerGame": "C:\\Users\\Katarzyna\\Documents\\Unreal Projects\\MultiplayerGame",
+					"Z:\\UEVFS\\MultiplayerGame 5.6": "C:\\Users\\Katarzyna\\Documents\\Unreal Projects\\MultiplayerGame 5.6",
 					"Z:\\UEVFS\\Root": "C:\\UnrealEngine"
 				}
 			},
@@ -969,7 +969,7 @@
 				"args": [
 					"-projectfiles",
 					"-vscode",
-					"-project=C:\\Users\\Katarzyna\\Documents\\Unreal Projects\\MultiplayerGame\\MultiplayerGame.uproject",
+					"-project=C:\\Users\\Katarzyna\\Documents\\Unreal Projects\\MultiplayerGame 5.6\\MultiplayerGame.uproject",
 					"-game",
 					"-engine",
 					"-dotnet"

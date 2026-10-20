@@ -10,6 +10,9 @@ AMCharacter::AMCharacter()
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 	GetMesh()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+	// Hardcoded player team; AI controllers override it on possess
+	TeamID = FGenericTeamId(0);
 }
 
 // Called when the game starts or when spawned
@@ -33,3 +36,13 @@ void AMCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 
 }
 
+
+void AMCharacter::SetGenericTeamId(const FGenericTeamId& NewTeamID)
+{
+	TeamID = NewTeamID;
+}
+
+FGenericTeamId AMCharacter::GetGenericTeamId() const
+{
+	return TeamID;
+}
