@@ -1,8 +1,8 @@
 #include "Player/MPlayerController.h"
 #include "Blueprint/WidgetLayoutLibrary.h"
 
-void AMPlayerController::BeginPlay()
-{
+void AMPlayerController::BeginPlay(){
+	/** Switches the local player to game-only input and removes the lobby widgets. */
 	Super::BeginPlay();
 
 	if (IsLocalController())
@@ -20,15 +20,15 @@ void AMPlayerController::BeginPlay()
 	}
 }
 
-void AMPlayerController::OnPossess(APawn* NewPawn)
-{
+void AMPlayerController::OnPossess(APawn* NewPawn){
+
 	Super::OnPossess(NewPawn);
 
 	UE_LOG(LogTemp, Warning, TEXT("SERVER possessed pawn: %s"), *GetNameSafe(NewPawn));
 }
 
-void AMPlayerController::AcknowledgePossession(APawn* NewPawn)
-{
+void AMPlayerController::AcknowledgePossession(APawn* NewPawn){
+
 	Super::AcknowledgePossession(NewPawn);
 
 	UE_LOG(LogTemp, Warning, TEXT("CLIENT acknowledged pawn: %s"), *GetNameSafe(NewPawn));

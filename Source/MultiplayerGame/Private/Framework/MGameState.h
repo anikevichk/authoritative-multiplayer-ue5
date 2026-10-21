@@ -43,7 +43,6 @@ private:
 	UFUNCTION()
 	void OnRep_PlayerSelectionArray();
 
-	// Seconds until the match starts, -1 while the countdown is not running
 	UPROPERTY(ReplicatedUsing = OnRep_StartCountdown)
 	int32 StartCountdown = -1;
 

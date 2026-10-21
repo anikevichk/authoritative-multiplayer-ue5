@@ -7,25 +7,29 @@
 #include "TimerManager.h"
 
 ALobbyGameMode::ALobbyGameMode() {
+	/** Keeps clients connected and keeps their PlayerStates when the server moves to the game map. */
 	bUseSeamlessTravel = true;
 }
 
 void ALobbyGameMode::BeginPlay() {
+	/** Starts a timer that checks the lobby state once per second. */
 	Super::BeginPlay();
 	GetWorldTimerManager().SetTimer(StartCountdownTimer, this, &ALobbyGameMode::UpdateStartCountdown, 1.f, true);
 }
 
 void ALobbyGameMode::Logout(AController* Exiting) {
-	// A player who left must not keep their slot, otherwise the match could never start
+	/** Frees the slot of a player who disconnected. */
 	if (AMGameState* MGameState = GetGameState<AMGameState>()) {
 		MGameState->RemovePlayerSelection(Exiting ? Exiting->PlayerState : nullptr);
 	}
 	Super::Logout(Exiting);
 }
 
-// Runs once per second on the server. The countdown starts when everyone is ready and is
-// cancelled by anything that breaks it: a new player, a slot change or a disconnect.
 void ALobbyGameMode::UpdateStartCountdown() {
+	/**
+	 * Runs once per second on the server: starts, advances or resets the countdown
+	 * and moves all players to the game map when it ends.
+	 */
 	AMGameState* MGameState = GetGameState<AMGameState>();
 	if (!MGameState) return;
 

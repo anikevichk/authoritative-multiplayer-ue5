@@ -6,12 +6,11 @@
 #include "Perception/AIPerceptionComponent.h"
 #include "Perception/AISenseConfig_Sight.h"
 
-AMAIController::AMAIController()
-{
+AMAIController::AMAIController(){
+	/** Sets up sight perception; the bot is in team 1 and reacts only to enemies. */
 	BotPerceptionComponent = CreateDefaultSubobject<UAIPerceptionComponent>(TEXT("BotPerceptionComponent"));
 	BotSightConfig = CreateDefaultSubobject<UAISenseConfig_Sight>(TEXT("BotSightConfig"));
 
-	// Hardcoded bot team; players are team 0 (see AMCharacter)
 	SetGenericTeamId(FGenericTeamId(1));
 
 	BotSightConfig->DetectionByAffiliation.bDetectEnemies = true;
@@ -28,8 +27,8 @@ AMAIController::AMAIController()
 
 }
 
-void AMAIController::OnPossess(APawn* NewPawn)
-{
+void AMAIController::OnPossess(APawn* NewPawn){
+	/** Gives the possessed pawn the bot team, because perception checks the team of the pawn. */
 	Super::OnPossess(NewPawn);
 
 	if (IGenericTeamAgentInterface* PawnTeamInterface = Cast<IGenericTeamAgentInterface>(NewPawn)){

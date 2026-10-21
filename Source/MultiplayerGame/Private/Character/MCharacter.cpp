@@ -4,45 +4,35 @@
 #include "Character/MCharacter.h"
 #include "Components/SkeletalMeshComponent.h"
 
-// Sets default values
-AMCharacter::AMCharacter()
-{
- 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+AMCharacter::AMCharacter(){
+	/** Enables ticking, turns off mesh collision and puts the character in team 0. */
 	PrimaryActorTick.bCanEverTick = true;
 	GetMesh()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
-	// Hardcoded player team; AI controllers override it on possess
 	TeamID = FGenericTeamId(0);
 }
 
-// Called when the game starts or when spawned
-void AMCharacter::BeginPlay()
-{
+void AMCharacter::BeginPlay(){
 	Super::BeginPlay();
-	
 }
 
-// Called every frame
-void AMCharacter::Tick(float DeltaTime)
-{
+void AMCharacter::Tick(float DeltaTime){
 	Super::Tick(DeltaTime);
 
 }
 
-// Called to bind functionality to input
-void AMCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
-{
+void AMCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent){
+	/** Input is bound in AMPlayerCharacter. */
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
-
 }
 
 
-void AMCharacter::SetGenericTeamId(const FGenericTeamId& NewTeamID)
-{
+void AMCharacter::SetGenericTeamId(const FGenericTeamId& NewTeamID){
+	/** Sets the team of the character; called by an AI controller on possess. */
 	TeamID = NewTeamID;
 }
 
-FGenericTeamId AMCharacter::GetGenericTeamId() const
-{
+FGenericTeamId AMCharacter::GetGenericTeamId() const{
+	/** Returns the team of the character used by AI perception (team 0 by default). */
 	return TeamID;
 }

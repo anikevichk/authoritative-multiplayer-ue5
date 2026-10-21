@@ -14,6 +14,7 @@
 #include "Components/WidgetSwitcher.h"
 
 void ULobbyWidget::NativeConstruct() {
+	/** Builds the slot grid and connects the widget to the game state and the player controller. */
 	Super::NativeConstruct();
 	
 	ClearAndLoadTeamSelectionSlots();
@@ -23,6 +24,7 @@ void ULobbyWidget::NativeConstruct() {
 }
 
 void ULobbyWidget::ClearAndLoadTeamSelectionSlots() {
+	/** Creates the slot buttons, one column per team. */
 	TeamSelectionPanel->ClearChildren();
 	const int32 PlayersPerTeam = UMNetStatics::GetPlayerCountPerTeam();
 
@@ -47,12 +49,12 @@ void ULobbyWidget::ClearAndLoadTeamSelectionSlots() {
 	}
 }
 void ULobbyWidget::SlotSelected(uint8 NewSlotID) {
-	if (LobbyPlayerController) {
-		LobbyPlayerController->Server_RequestSlotSelectionChange(NewSlotID);
-	}
+	/** Asks the server to move the player to the clicked slot. */
+	if (LobbyPlayerController) LobbyPlayerController->Server_RequestSlotSelectionChange(NewSlotID);
 }
 
 void ULobbyWidget::ConfigGameState() {
+	/** Subscribes to game state updates, retrying every second until the game state has replicated. */
 	UWorld* World = GetWorld();
 	if (!World) return;
 
@@ -67,6 +69,7 @@ void ULobbyWidget::ConfigGameState() {
 }
 
 void ULobbyWidget::UpdatePlayerSelectionDisplay(const TArray<FPlayerSelection>& PlayerSelections) {
+	/** Shows player names in the slots they hold; the other slots show Empty. */
 	for (UTeamSelectionWidget* SelectionSlot:TeamSelectionSlots) {
 		SelectionSlot->UpdateSlotInfo("Empty");
 	}
@@ -78,6 +81,7 @@ void ULobbyWidget::UpdatePlayerSelectionDisplay(const TArray<FPlayerSelection>& 
 }
 
 void ULobbyWidget::UpdateStartCountdownDisplay(int32 SecondsLeft) {
+	/** Shows the countdown from the server; a negative value means the lobby is waiting for players. */
 	if (!CountdownText) return;
 
 	if (SecondsLeft < 0) CountdownText->SetText(FText::FromString(TEXT("Waiting for players...")));
@@ -85,5 +89,6 @@ void ULobbyWidget::UpdateStartCountdownDisplay(int32 SecondsLeft) {
 }
 
 void ULobbyWidget::SwitchToGame() {
+	/** Switches to the game screen; currently unused. */
 	MainSwitcher->SetActiveWidget(GameRoot);
 }

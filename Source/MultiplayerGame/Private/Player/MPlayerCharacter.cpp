@@ -10,6 +10,7 @@
 
 
 AMPlayerCharacter::AMPlayerCharacter(){
+	/** Creates the camera on a spring arm and makes the character turn towards its movement. */
 	SpringArm = CreateDefaultSubobject<USpringArmComponent>("Spring Arm");
 	SpringArm->SetupAttachment(GetRootComponent());
 	SpringArm->bUsePawnControlRotation = true;
@@ -23,6 +24,7 @@ AMPlayerCharacter::AMPlayerCharacter(){
 }
 
 void AMPlayerCharacter::PawnClientRestart(){
+	/** Adds the movement input mapping for the local player. */
 	Super::PawnClientRestart();
 	APlayerController* PlayerController = GetController<APlayerController>();
 	if (PlayerController){
@@ -35,8 +37,8 @@ void AMPlayerCharacter::PawnClientRestart(){
 	
 }
 
-void AMPlayerCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent)
-{
+void AMPlayerCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent){
+	/** Binds the jump, look and move input actions. */
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 	UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerInputComponent);
 	if (EnhancedInputComponent){
@@ -47,6 +49,7 @@ void AMPlayerCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerI
 }
 
 void AMPlayerCharacter::HandleLookInput(const FInputActionValue& Input){
+	/** Rotates the camera from mouse or stick input. */
 	FVector2D InputValue = Input.Get<FVector2D>();
 	
 	AddControllerPitchInput(InputValue.Y);
@@ -54,6 +57,7 @@ void AMPlayerCharacter::HandleLookInput(const FInputActionValue& Input){
 }
 
 void AMPlayerCharacter::HandleMoveInput(const FInputActionValue& Input){
+	/** Moves the character relative to the camera direction. */
 	FVector2D InputValue = Input.Get<FVector2D>();
 	InputValue.Normalize();
 
@@ -61,13 +65,16 @@ void AMPlayerCharacter::HandleMoveInput(const FInputActionValue& Input){
 }
 
 FVector AMPlayerCharacter::GetLookRightDirection(){
+	/** Returns the right direction of the camera. */
 	return Camera->GetRightVector();
 }
 
 FVector AMPlayerCharacter::GetLookForwardDirection(){
+	/** Returns the forward direction of the camera. */
 	return Camera->GetForwardVector();
 }
 
 FVector AMPlayerCharacter::GetMoveForwardDirection(){
+	/** Returns the direction used for forward movement, built from the camera vectors. */
 	return FVector::CrossProduct(GetLookRightDirection(), GetLookForwardDirection());
 }

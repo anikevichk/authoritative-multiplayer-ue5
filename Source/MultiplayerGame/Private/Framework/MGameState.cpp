@@ -4,6 +4,7 @@
 #include "Player/MPlayerState.h"
 
 void AMGameState::RequestPlayerSelectionChange(APlayerState* RequestingPlayer, uint8 DesiredSlot) {
+	/** Moves a player to a free slot and sets their team. Server only. */
 	if (!HasAuthority() || IsSlotTaken(DesiredSlot)) return;
 	
 	FPlayerSelection* PlayerSelectionPtr = PlayerSelectionArray.FindByPredicate([&](const FPlayerSelection& PlayerSelection) {
@@ -21,6 +22,7 @@ void AMGameState::RequestPlayerSelectionChange(APlayerState* RequestingPlayer, u
 }
 
 void AMGameState::RemovePlayerSelection(const APlayerState* LeavingPlayer) {
+	/** Frees the slot of a player who left the lobby. Server only. */
 	if (!HasAuthority()) return;
 
 	const int32 RemovedCount = PlayerSelectionArray.RemoveAll([&](const FPlayerSelection& PlayerSelection) {
@@ -31,6 +33,7 @@ void AMGameState::RemovePlayerSelection(const APlayerState* LeavingPlayer) {
 }
 
 bool AMGameState::IsSlotTaken(uint8 SlotID) const {
+	/** Returns true if a player already holds the slot. */
 	for (const FPlayerSelection& PlayerSelection: PlayerSelectionArray) {
 		if (PlayerSelection.GetSlot() == SlotID) return true;
 		
@@ -39,6 +42,7 @@ bool AMGameState::IsSlotTaken(uint8 SlotID) const {
 }
 
 void AMGameState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const{
+	/** Replicates the slot selections and the start countdown to all clients. */
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
 	DOREPLIFETIME_CONDITION_NOTIFY(
@@ -51,11 +55,12 @@ void AMGameState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifet
 }
 
 const TArray<FPlayerSelection>& AMGameState::GetPlayerSelectionChange() const {
+	/** Returns the current slot selections of all players. */
 	return PlayerSelectionArray;
 }
 
-// Every connected player has picked a slot and both teams have at least one player
 bool AMGameState::CanStart() const {
+	/** Returns true when every player has picked a slot and both teams have players. */
 	if (PlayerArray.Num() == 0 || PlayerSelectionArray.Num() != PlayerArray.Num()) return false;
 
 	bool bTeamHasPlayers[2] = {false, false};
@@ -67,6 +72,7 @@ bool AMGameState::CanStart() const {
 }
 
 void AMGameState::SetStartCountdown(int32 NewValue) {
+	/** Sets the seconds left before the match starts, or -1 when there is no countdown. Server only. */
 	if (!HasAuthority() || StartCountdown == NewValue) return;
 
 	StartCountdown = NewValue;
@@ -74,9 +80,11 @@ void AMGameState::SetStartCountdown(int32 NewValue) {
 }
 
 void AMGameState::OnRep_PlayerSelectionArray(){
+	/** Passes the new slot selections to the lobby widget on clients. */
 	OnPlayerSelectionUpdated.Broadcast(PlayerSelectionArray);
 }
 
 void AMGameState::OnRep_StartCountdown() {
+	/** Passes the new countdown value to the lobby widget on clients. */
 	OnStartCountdownUpdated.Broadcast(StartCountdown);
 }
