@@ -21,9 +21,6 @@ public:
 	UFUNCTION(Server, Reliable, WithValidation)
 	void Server_RequestSlotSelectionChange(uint8 SlotID);
 
-	UFUNCTION(Server, Reliable, WithValidation)
-	void Server_Start();
-
 	UFUNCTION(Client, Reliable)
 	void Client_Start();
 };

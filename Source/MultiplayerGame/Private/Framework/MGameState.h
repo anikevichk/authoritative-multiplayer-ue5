@@ -10,26 +10,43 @@ DECLARE_MULTICAST_DELEGATE_OneParam(
 	const TArray<FPlayerSelection>&
 );
 
+DECLARE_MULTICAST_DELEGATE_OneParam(
+	FOnStartCountdownUpdated,
+	int32
+);
+
 UCLASS()
 class MULTIPLAYERGAME_API AMGameState : public AGameStateBase
 {
 	GENERATED_BODY()
 
 public:
-	void RequestPlayerSelectionChange(const APlayerState* RequestingPlayer, uint8 DesiredSlot);
+	void RequestPlayerSelectionChange(APlayerState* RequestingPlayer, uint8 DesiredSlot);
+	void RemovePlayerSelection(const APlayerState* LeavingPlayer);
 	bool IsSlotTaken(uint8 SlotID) const;
-	
+
 	FOnPlayerSelectionUpdated OnPlayerSelectionUpdated;
+	FOnStartCountdownUpdated OnStartCountdownUpdated;
 
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 	
 	const TArray<FPlayerSelection>& GetPlayerSelectionChange() const;
 
 	bool CanStart() const;
+
+	void SetStartCountdown(int32 NewValue);
+	FORCEINLINE int32 GetStartCountdown() const { return StartCountdown; }
 private:
 	UPROPERTY(ReplicatedUsing = OnRep_PlayerSelectionArray)
 	TArray<FPlayerSelection> PlayerSelectionArray;
 
 	UFUNCTION()
 	void OnRep_PlayerSelectionArray();
+
+	// Seconds until the match starts, -1 while the countdown is not running
+	UPROPERTY(ReplicatedUsing = OnRep_StartCountdown)
+	int32 StartCountdown = -1;
+
+	UFUNCTION()
+	void OnRep_StartCountdown();
 };

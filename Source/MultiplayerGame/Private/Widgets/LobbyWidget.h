@@ -27,8 +27,8 @@ private:
 	UPROPERTY(meta = (BindWidget))
 	class UWidget* GameRoot;
 
-	UPROPERTY(meta = (BindWidget))
-	class UButton* StartButton;
+	UPROPERTY(meta = (BindWidgetOptional))
+	class UTextBlock* CountdownText;
 
 	UPROPERTY(meta = (BindWidget))
 	class UUniformGridPanel* TeamSelectionPanel;
@@ -52,9 +52,7 @@ private:
 	class AMGameState* GameState;
 
 	void UpdatePlayerSelectionDisplay(const TArray<FPlayerSelection>& PlayerSelections);
-	
-	UFUNCTION()
-	void StartButtonClicked();
+	void UpdateStartCountdownDisplay(int32 SecondsLeft);
 
 	void SwitchToGame();
 };

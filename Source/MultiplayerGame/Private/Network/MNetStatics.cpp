@@ -13,3 +13,7 @@ void UMNetStatics::SetPlayerCountPerTeam(uint8 NewValue)
 {
 	PlayerCountPerTeam = NewValue;
 }
+
+uint8 UMNetStatics::GetTeamForSlot(uint8 SlotID) {
+	return SlotID / PlayerCountPerTeam;
+}

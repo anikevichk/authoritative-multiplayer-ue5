@@ -215,11 +215,39 @@ else
     echo "Warning: server did not report listening within ${SERVER_TIMEOUT}s, starting clients anyway." >&2
 fi
 
-# Client windows are laid out in a grid that fits the primary screen
-SCREEN_WIDTH="$(powershell -NoProfile -Command "Add-Type -AssemblyName System.Windows.Forms; [System.Windows.Forms.Screen]::PrimaryScreen.WorkingArea.Width" 2>/dev/null | tr -d '\r' || true)"
+# Client windows are laid out in a grid that fits the primary screen.
+# Window borders and the title bar take extra space around the ResX x ResY game area.
+BORDER_X=20
+BORDER_Y=40
+read -r SCREEN_WIDTH SCREEN_HEIGHT <<< "$(powershell -NoProfile -Command "Add-Type -AssemblyName System.Windows.Forms; \$a = [System.Windows.Forms.Screen]::PrimaryScreen.WorkingArea; \"\$(\$a.Width) \$(\$a.Height)\"" 2>/dev/null | tr -d '\r' || true)"
 [[ "$SCREEN_WIDTH" =~ ^[0-9]+$ ]] || SCREEN_WIDTH=1920
-COLUMNS=$(( SCREEN_WIDTH / (RES_X + 20) ))
-(( COLUMNS < 1 )) && COLUMNS=1
+[[ "$SCREEN_HEIGHT" =~ ^[0-9]+$ ]] || SCREEN_HEIGHT=1040
+
+VISIBLE_COUNT=$CLIENTS
+(( VISIBLE >= 0 && VISIBLE < CLIENTS )) && VISIBLE_COUNT=$VISIBLE
+
+# Not named COLUMNS: bash overwrites that variable with the terminal width
+GRID_COLUMNS=$(( SCREEN_WIDTH / (RES_X + BORDER_X) ))
+(( GRID_COLUMNS < 1 )) && GRID_COLUMNS=1
+GRID_ROWS=$(( (VISIBLE_COUNT + GRID_COLUMNS - 1) / GRID_COLUMNS ))
+
+# If the windows do not fit, pick the column count that gives the biggest 16:9 windows
+if (( VISIBLE_COUNT > 0 && GRID_ROWS * (RES_Y + BORDER_Y) > SCREEN_HEIGHT )); then
+    BEST_RES_X=0
+    for (( COLS = 1; COLS <= VISIBLE_COUNT; COLS++ )); do
+        ROWS=$(( (VISIBLE_COUNT + COLS - 1) / COLS ))
+        FIT_X=$(( SCREEN_WIDTH / COLS - BORDER_X ))
+        FIT_Y=$(( SCREEN_HEIGHT / ROWS - BORDER_Y ))
+        (( FIT_X > FIT_Y * 16 / 9 )) && FIT_X=$(( FIT_Y * 16 / 9 ))
+        if (( FIT_X > BEST_RES_X )); then
+            BEST_RES_X=$FIT_X
+            GRID_COLUMNS=$COLS
+        fi
+    done
+    RES_X=$BEST_RES_X
+    RES_Y=$(( RES_X * 9 / 16 ))
+    echo "Windows do not fit the screen, using ${RES_X}x${RES_Y} in $GRID_COLUMNS columns"
+fi
 
 for (( i = 1; i <= CLIENTS; i++ )); do
     CLIENT_LOG="$RUN_DIR/client_$i.log"
@@ -234,8 +262,8 @@ for (( i = 1; i <= CLIENTS; i++ )); do
         CLIENT_WINDOW="Hidden"
     else
         INDEX=$(( i - 1 ))
-        WIN_X=$(( (INDEX % COLUMNS) * (RES_X + 20) ))
-        WIN_Y=$(( (INDEX / COLUMNS) * (RES_Y + 40) ))
+        WIN_X=$(( (INDEX % GRID_COLUMNS) * (RES_X + BORDER_X) ))
+        WIN_Y=$(( (INDEX / GRID_COLUMNS) * (RES_Y + BORDER_Y) ))
         ARGS+=(-windowed "-ResX=$RES_X" "-ResY=$RES_Y" "-WinX=$WIN_X" "-WinY=$WIN_Y")
     fi
     [[ -n "$CLIENT_ARGS" ]] && read -r -a EXTRA <<< "$CLIENT_ARGS" && ARGS+=("${EXTRA[@]}")

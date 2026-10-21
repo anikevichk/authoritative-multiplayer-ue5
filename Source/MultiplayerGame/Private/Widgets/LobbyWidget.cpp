@@ -10,7 +10,7 @@
 #include "Network/MNetStatics.h"
 #include "Player/LobbyPlayerController.h"
 #include "Framework/MGameState.h"
-#include "Components/Button.h"
+#include "Components/TextBlock.h"
 #include "Components/WidgetSwitcher.h"
 
 void ULobbyWidget::NativeConstruct() {
@@ -20,8 +20,6 @@ void ULobbyWidget::NativeConstruct() {
 	ConfigGameState();
 	LobbyPlayerController = GetOwningPlayer<ALobbyPlayerController>();	
 	if (LobbyPlayerController) LobbyPlayerController->OnSwitchToGame.BindUObject(this, &ULobbyWidget::SwitchToGame);
-	StartButton->SetIsEnabled(false);
-	StartButton->OnClicked.AddDynamic(this, &ULobbyWidget::StartButtonClicked);
 }
 
 void ULobbyWidget::ClearAndLoadTeamSelectionSlots() {
@@ -62,7 +60,9 @@ void ULobbyWidget::ConfigGameState() {
 	if (!GameState) World->GetTimerManager().SetTimer(GonfigTimer, this, &ULobbyWidget::ConfigGameState, 1.f);
 	else {
 		GameState->OnPlayerSelectionUpdated.AddUObject(this, &ULobbyWidget::UpdatePlayerSelectionDisplay);
+		GameState->OnStartCountdownUpdated.AddUObject(this, &ULobbyWidget::UpdateStartCountdownDisplay);
 		UpdatePlayerSelectionDisplay(GameState->GetPlayerSelectionChange());
+		UpdateStartCountdownDisplay(GameState->GetStartCountdown());
 	}
 }
 
@@ -75,12 +75,13 @@ void ULobbyWidget::UpdatePlayerSelectionDisplay(const TArray<FPlayerSelection>& 
 		if (!PlayerSelection.IsValid()) continue;
 		TeamSelectionSlots[PlayerSelection.GetSlot()]->UpdateSlotInfo(PlayerSelection.GetPlayerNickname());
 	}
-
-	if (GameState) StartButton->SetIsEnabled(GameState->CanStart());
 }
 
-void ULobbyWidget::StartButtonClicked() {
-	if (LobbyPlayerController) LobbyPlayerController->Server_Start();
+void ULobbyWidget::UpdateStartCountdownDisplay(int32 SecondsLeft) {
+	if (!CountdownText) return;
+
+	if (SecondsLeft < 0) CountdownText->SetText(FText::FromString(TEXT("Waiting for players...")));
+	else CountdownText->SetText(FText::FromString(FString::Printf(TEXT("Match starts in %d"), SecondsLeft)));
 }
 
 void ULobbyWidget::SwitchToGame() {
