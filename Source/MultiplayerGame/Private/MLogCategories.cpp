@@ -1,0 +1,5 @@
+#include "MLogCategories.h"
+
+DEFINE_LOG_CATEGORY(LogMGame);
+DEFINE_LOG_CATEGORY(LogMLobby);
+DEFINE_LOG_CATEGORY(LogMTeam);

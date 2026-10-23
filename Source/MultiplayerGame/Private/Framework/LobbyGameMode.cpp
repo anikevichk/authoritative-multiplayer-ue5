@@ -3,6 +3,7 @@
 
 #include "Framework/LobbyGameMode.h"
 #include "Framework/MGameState.h"
+#include "MLogCategories.h"
 #include "GameFramework/PlayerState.h"
 #include "TimerManager.h"
 
@@ -19,8 +20,11 @@ void ALobbyGameMode::BeginPlay() {
 
 void ALobbyGameMode::Logout(AController* Exiting) {
 	/** Frees the slot of a player who disconnected. */
+	const APlayerState* LeavingPlayer = Exiting ? Exiting->PlayerState : nullptr;
+	UE_LOG(LogMLobby, Log, TEXT("[Server] %s left the lobby"), LeavingPlayer ? *LeavingPlayer->GetPlayerName() : TEXT("unknown player"));
+
 	if (AMGameState* MGameState = GetGameState<AMGameState>()) {
-		MGameState->RemovePlayerSelection(Exiting ? Exiting->PlayerState : nullptr);
+		MGameState->RemovePlayerSelection(LeavingPlayer);
 	}
 	Super::Logout(Exiting);
 }
@@ -34,12 +38,14 @@ void ALobbyGameMode::UpdateStartCountdown() {
 	if (!MGameState) return;
 
 	if (!MGameState->CanStart()) {
+		if (MGameState->GetStartCountdown() >= 0) UE_LOG(LogMLobby, Log, TEXT("[Server] Countdown cancelled, start conditions are no longer met"));
 		MGameState->SetStartCountdown(-1);
 		return;
 	}
 
 	const int32 Countdown = MGameState->GetStartCountdown();
 	if (Countdown < 0) {
+		UE_LOG(LogMLobby, Log, TEXT("[Server] All players are ready, match starts in %d s"), StartCountdownDuration);
 		MGameState->SetStartCountdown(StartCountdownDuration);
 		return;
 	}
@@ -50,5 +56,6 @@ void ALobbyGameMode::UpdateStartCountdown() {
 
 	MGameState->SetStartCountdown(0);
 	GetWorldTimerManager().ClearTimer(StartCountdownTimer);
+	UE_LOG(LogMLobby, Log, TEXT("[Server] Travelling to %s"), *GameMapPath);
 	GetWorld()->ServerTravel(GameMapPath);
 }

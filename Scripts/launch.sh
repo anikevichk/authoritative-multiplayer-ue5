@@ -7,6 +7,7 @@
 #   ./launch.sh --mode editor            # current code via UnrealEditor.exe (no packaging)
 #   ./launch.sh -c 8 --visible 0         # clients without rendering (bots / load tests)
 #   ./launch.sh -c 10 --visible 2        # 2 clients with windows, 8 without rendering
+#   ./launch.sh --all-logs               # full engine logs instead of the filtered ones
 #   ./launch.sh --stop                   # stop everything started by this script
 #
 # Options:
@@ -23,6 +24,7 @@
 #       --timeout N        seconds to wait for the server (default 120)
 #       --server-args STR  extra server arguments
 #       --client-args STR  extra client arguments
+#       --all-logs         write every engine log line (default: project logs, warnings, errors)
 #       --stop             stop processes started by this script
 
 set -euo pipefail
@@ -42,7 +44,13 @@ SERVER_CONSOLE=0
 SERVER_TIMEOUT=120
 SERVER_ARGS=""
 CLIENT_ARGS=""
+ALL_LOGS=0
 STOP=0
+
+# Default log filter: engine messages only from Warning up, project categories in full.
+# Known harmless engine warnings (cursor mapping, stale HLOD actors, slow package loads,
+# the Paragon IK rig asset) are limited to errors.
+LOG_FILTER="global Warning, LogMGame Log, LogMLobby Log, LogMTeam Log, LogLiveCoding off, LogPlayerManagement Error, LogWorldPartition Error, LogStreaming Error, LogLinker Error"
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_DIR="$(dirname "$SCRIPT_DIR")"
@@ -66,8 +74,9 @@ while [[ $# -gt 0 ]]; do
         --timeout)        SERVER_TIMEOUT="$2"; shift 2 ;;
         --server-args)    SERVER_ARGS="$2"; shift 2 ;;
         --client-args)    CLIENT_ARGS="$2"; shift 2 ;;
+        --all-logs)       ALL_LOGS=1; shift ;;
         --stop)           STOP=1; shift ;;
-        -h|--help)        sed -n '2,27p' "$0" | sed 's/^# \{0,1\}//'; exit 0 ;;
+        -h|--help)        sed -n '2,29p' "$0" | sed 's/^# \{0,1\}//'; exit 0 ;;
         *)                echo "Unknown option: $1 (see --help)" >&2; exit 1 ;;
     esac
 done
@@ -178,6 +187,9 @@ RUN_DIR="$LAUNCH_DIR/$(date +%Y-%m-%d_%H-%M-%S)"
 mkdir -p "$RUN_DIR"
 SERVER_LOG="$RUN_DIR/server.log"
 
+LOG_ARGS=()
+(( ALL_LOGS == 0 )) && LOG_ARGS=("-LogCmds=$LOG_FILTER")
+
 echo "Mode:    $MODE"
 echo "Server:  $SERVER_EXE"
 echo "Client:  $CLIENT_EXE"
@@ -187,7 +199,7 @@ echo
 # Server runs above normal priority so that clients on the same machine do not starve it.
 # Its console is hidden by default: clicking into a console (QuickEdit) pauses log output
 # and freezes the whole server.
-ARGS=("${SERVER_BASE_ARGS[@]}" "$MAP" "-port=$PORT" "-abslog=$(cygpath -w "$SERVER_LOG")")
+ARGS=("${SERVER_BASE_ARGS[@]}" "$MAP" "-port=$PORT" "-abslog=$(cygpath -w "$SERVER_LOG")" "${LOG_ARGS[@]}")
 SERVER_WINDOW="Hidden"
 if [[ $SERVER_CONSOLE -eq 1 ]]; then
     ARGS+=(-log)
@@ -203,7 +215,8 @@ for (( i = 0; i < SERVER_TIMEOUT * 2; i++ )); do
         echo "Server exited. See $SERVER_LOG" >&2
         exit 1
     fi
-    if [[ -f "$SERVER_LOG" ]] && grep -q "listening on port" "$SERVER_LOG"; then
+    # The port check does not depend on the log filter
+    if netstat -ano -p UDP 2>/dev/null | grep -E ":$PORT[[:space:]]" | grep -qE "[[:space:]]$SERVER_PID[[:space:]]*$"; then
         READY=1
         break
     fi
@@ -251,7 +264,7 @@ fi
 
 for (( i = 1; i <= CLIENTS; i++ )); do
     CLIENT_LOG="$RUN_DIR/client_$i.log"
-    ARGS=("${CLIENT_BASE_ARGS[@]}" "127.0.0.1:$PORT?Name=Player$i" "-abslog=$(cygpath -w "$CLIENT_LOG")")
+    ARGS=("${CLIENT_BASE_ARGS[@]}" "127.0.0.1:$PORT" "-abslog=$(cygpath -w "$CLIENT_LOG")" "${LOG_ARGS[@]}")
 
     # Uncapped clients take several CPU cores each and slow down the server
     (( MAX_FPS > 0 )) && ARGS+=("-ExecCmds=t.MaxFPS $MAX_FPS")

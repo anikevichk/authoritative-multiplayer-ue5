@@ -1,11 +1,18 @@
 #include "Framework/MGameState.h"
 #include "Net/UnrealNetwork.h"
+#include "MLogCategories.h"
 #include "Network/MNetStatics.h"
 #include "Player/MPlayerState.h"
 
 void AMGameState::RequestPlayerSelectionChange(APlayerState* RequestingPlayer, uint8 DesiredSlot) {
 	/** Moves a player to a free slot and sets their team. Server only. */
-	if (!HasAuthority() || IsSlotTaken(DesiredSlot)) return;
+	if (!HasAuthority()) return;
+
+	const FString PlayerName = RequestingPlayer ? RequestingPlayer->GetPlayerName() : TEXT("unknown player");
+	if (IsSlotTaken(DesiredSlot)) {
+		UE_LOG(LogMLobby, Log, TEXT("[Server] %s asked for slot %d, rejected: the slot is taken"), *PlayerName, DesiredSlot);
+		return;
+	}
 	
 	FPlayerSelection* PlayerSelectionPtr = PlayerSelectionArray.FindByPredicate([&](const FPlayerSelection& PlayerSelection) {
 		return PlayerSelection.IsForPlayer(RequestingPlayer);
@@ -16,7 +23,8 @@ void AMGameState::RequestPlayerSelectionChange(APlayerState* RequestingPlayer, u
 
 	if (AMPlayerState* MPlayerState = Cast<AMPlayerState>(RequestingPlayer)) {
 		MPlayerState->SetTeamID(FGenericTeamId(UMNetStatics::GetTeamForSlot(DesiredSlot)));
-	}	
+	}
+	UE_LOG(LogMLobby, Log, TEXT("[Server] %s took slot %d, team %d"), *PlayerName, DesiredSlot, UMNetStatics::GetTeamForSlot(DesiredSlot));	
 
 	OnPlayerSelectionUpdated.Broadcast(PlayerSelectionArray);
 }

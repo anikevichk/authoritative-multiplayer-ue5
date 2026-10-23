@@ -1,5 +1,6 @@
 #include "Player/MPlayerController.h"
 #include "Blueprint/WidgetLayoutLibrary.h"
+#include "MLogCategories.h"
 
 void AMPlayerController::BeginPlay(){
 	/** Switches the local player to game-only input and removes the lobby widgets. */
@@ -16,7 +17,7 @@ void AMPlayerController::BeginPlay(){
 		bEnableClickEvents = false;
 		bEnableMouseOverEvents = false;
 
-		UE_LOG(LogTemp, Warning, TEXT("Game input mode set"));
+		UE_LOG(LogMGame, Verbose, TEXT("[Client] Game input mode set"));
 	}
 }
 
@@ -24,12 +25,12 @@ void AMPlayerController::OnPossess(APawn* NewPawn){
 
 	Super::OnPossess(NewPawn);
 
-	UE_LOG(LogTemp, Warning, TEXT("SERVER possessed pawn: %s"), *GetNameSafe(NewPawn));
+	UE_LOG(LogMGame, Verbose, TEXT("[Server] %s possessed %s"), *GetName(), *GetNameSafe(NewPawn));
 }
 
 void AMPlayerController::AcknowledgePossession(APawn* NewPawn){
 
 	Super::AcknowledgePossession(NewPawn);
 
-	UE_LOG(LogTemp, Warning, TEXT("CLIENT acknowledged pawn: %s"), *GetNameSafe(NewPawn));
+	UE_LOG(LogMGame, Verbose, TEXT("[Client] %s acknowledged %s"), *GetName(), *GetNameSafe(NewPawn));
 }

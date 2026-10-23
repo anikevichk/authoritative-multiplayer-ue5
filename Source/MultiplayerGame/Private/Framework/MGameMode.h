@@ -13,5 +13,10 @@ UCLASS()
 class AMGameMode : public AGameModeBase
 {
 	GENERATED_BODY()
-	
+
+public:
+	virtual void PostLogin(APlayerController* NewPlayer) override;
+
+private:
+	int32 JoinedPlayerCount = 0;
 };
