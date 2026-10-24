@@ -7,6 +7,15 @@
 #include "GenericTeamAgentInterface.h"
 #include "MCharacter.generated.h"
 
+UENUM()
+enum class EHitDirection : uint8
+{
+	Front,
+	Back,
+	Left,
+	Right
+};
+
 UCLASS()
 class AMCharacter : public ACharacter, public IGenericTeamAgentInterface
 {
@@ -30,11 +39,40 @@ public:
 	virtual void SetGenericTeamId(const FGenericTeamId& NewTeamID) override;
 	virtual FGenericTeamId GetGenericTeamId() const override;
 
+	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
+
 	void RequestAttack();
 
 private:
+	UPROPERTY(VisibleAnywhere, Category = "UI")
+	class UWidgetComponent* HealthBarComponent;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Health")
+	float MaxHealth = 100.f;
+
+	UPROPERTY(ReplicatedUsing = OnRep_Health)
+	float Health = 100.f;
+
+	UFUNCTION()
+	void OnRep_Health();
+
+	UPROPERTY(EditDefaultsOnly, Category = "Health")
+	float DeathImpulseStrength = 300.f;
+
+	UPROPERTY(Replicated)
+	FVector_NetQuantizeNormal LastHitDirection;
+
+	bool bDeathHandled = false;
+
+	bool IsDead() const;
+	void HandleDeath();
+	void UpdateHealthBar();
+
 	UPROPERTY(EditDefaultsOnly, Category = "Combat")
 	class UAnimMontage* AttackMontage;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Combat")
+	TMap<EHitDirection, class UAnimMontage*> HitReactMontages;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Combat")
 	float AttackDamage = 20.f;
@@ -59,9 +97,14 @@ private:
 	UFUNCTION(NetMulticast, Unreliable)
 	void Multicast_PlayAttack();
 
+	UFUNCTION(NetMulticast, Unreliable)
+	void Multicast_PlayHitReact(EHitDirection Direction);
+
+	EHitDirection GetHitDirection(const AActor* DamageCauser) const;
+
 	bool IsAttackReady(float Tolerance = 0.f) const;
 	void PerformAttack();
-	void PlayAttackMontage();
+	void PlayMontage(class UAnimMontage* Montage);
 
 	UPROPERTY(ReplicatedUsing = OnRep_TeamID)
 	FGenericTeamId TeamID;

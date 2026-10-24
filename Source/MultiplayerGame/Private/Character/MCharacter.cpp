@@ -5,19 +5,34 @@
 #include "Components/SkeletalMeshComponent.h"
 #include "Animation/AnimInstance.h"
 #include "Animation/AnimMontage.h"
+#include "Components/CapsuleComponent.h"
+#include "Components/WidgetComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
+#include "GameFramework/PlayerController.h"
 #include "Kismet/GameplayStatics.h"
 #include "Net/UnrealNetwork.h"
 #include "Player/MPlayerState.h"
+#include "Widgets/HealthBarWidget.h"
 #include "MLogCategories.h"
 
 AMCharacter::AMCharacter(){
-	/** Enables ticking and turns off mesh collision; the team is set on possess. */
+	/** Enables ticking, turns off mesh collision and adds the health bar above the head; the team is set on possess. */
 	PrimaryActorTick.bCanEverTick = true;
 	GetMesh()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+	HealthBarComponent = CreateDefaultSubobject<UWidgetComponent>("Health Bar");
+	HealthBarComponent->SetupAttachment(GetRootComponent());
+	HealthBarComponent->SetWidgetSpace(EWidgetSpace::Screen);
+	HealthBarComponent->SetDrawSize(FVector2D(120.f, 12.f));
+	HealthBarComponent->SetRelativeLocation(FVector(0.f, 0.f, 110.f));
 }
 
 void AMCharacter::BeginPlay(){
+	/** Starts with full health on the server and shows the current health on every machine. */
 	Super::BeginPlay();
+
+	if (HasAuthority()) Health = MaxHealth;
+	UpdateHealthBar();
 }
 
 void AMCharacter::Tick(float DeltaTime){
@@ -41,10 +56,71 @@ void AMCharacter::PossessedBy(AController* NewController){
 }
 
 void AMCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const{
-	/** Replicates the team so that clients know which characters are enemies. */
+	/** Replicates the team so that clients know which characters are enemies, and the health for the health bars. */
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
 	DOREPLIFETIME(AMCharacter, TeamID);
+	DOREPLIFETIME(AMCharacter, Health);
+	DOREPLIFETIME(AMCharacter, LastHitDirection);
+}
+
+float AMCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser){
+	/** Reduces the health on the server only and remembers the direction of the hit; clients get both values through replication. */
+	const float AppliedDamage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
+	if (!HasAuthority() || IsDead() || AppliedDamage <= 0.f) return 0.f;
+
+	if (DamageCauser) LastHitDirection = (GetActorLocation() - DamageCauser->GetActorLocation()).GetSafeNormal2D();
+	Health = FMath::Clamp(Health - AppliedDamage, 0.f, MaxHealth);
+	UpdateHealthBar();
+
+	UE_LOG(LogMCombat, Log, TEXT("[Server] %s has %.0f/%.0f health"), *GetOwnerName(), Health, MaxHealth);
+	if (IsDead()){
+		UE_LOG(LogMCombat, Log, TEXT("[Server] %s died"), *GetOwnerName());
+		HandleDeath();
+	}
+	else{
+		Multicast_PlayHitReact(GetHitDirection(DamageCauser));
+	}
+
+	return AppliedDamage;
+}
+
+void AMCharacter::OnRep_Health(){
+	/** Updates the health bar on a client when the server changes the health, and handles the death once it reaches zero. */
+	UpdateHealthBar();
+	if (IsDead()) HandleDeath();
+}
+
+bool AMCharacter::IsDead() const{
+	/** Returns true when the health has dropped to zero. */
+	return Health <= 0.f;
+}
+
+void AMCharacter::HandleDeath(){
+	/** Stops all movement and player input (the camera stays still), turns off the capsule, hides the health bar and lets the body fall as a ragdoll pushed away from the last hit, with the animation paused, so bones without physics bodies (eyelids, weapon) stop moving. Runs once on every machine; the ragdoll is only visual, so a dedicated server skips it. */
+	if (bDeathHandled) return;
+	bDeathHandled = true;
+
+	GetCharacterMovement()->DisableMovement();
+	if (APlayerController* PlayerController = GetController<APlayerController>()){
+		if (PlayerController->IsLocalController()) DisableInput(PlayerController);
+	}
+	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	HealthBarComponent->SetVisibility(false);
+
+	if (GetNetMode() != NM_DedicatedServer){
+		GetMesh()->bPauseAnims = true;
+		GetMesh()->SetCollisionProfileName(TEXT("Ragdoll"));
+		GetMesh()->SetSimulatePhysics(true);
+		GetMesh()->AddImpulseToAllBodiesBelow(LastHitDirection * DeathImpulseStrength, NAME_None, true);
+	}
+}
+
+void AMCharacter::UpdateHealthBar(){
+	/** Shows the current share of health in the bar; there is no widget on a dedicated server. */
+	if (UHealthBarWidget* HealthBarWidget = Cast<UHealthBarWidget>(HealthBarComponent->GetUserWidgetObject())){
+		HealthBarWidget->SetHealthPercent(MaxHealth > 0.f ? Health / MaxHealth : 0.f);
+	}
 }
 
 void AMCharacter::SetGenericTeamId(const FGenericTeamId& NewTeamID){
@@ -85,10 +161,10 @@ FGenericTeamId AMCharacter::GetGenericTeamId() const{
 
 void AMCharacter::RequestAttack(){
 	/** Starts an attack: the owning client plays the animation at once (prediction) and asks the server to resolve the hit. */
-	if (!IsAttackReady()) return;
+	if (IsDead() || !IsAttackReady()) return;
 
 	LastAttackTime = GetWorld()->GetTimeSeconds();
-	PlayAttackMontage();
+	PlayMontage(AttackMontage);
 
 	if (HasAuthority()) PerformAttack();
 	else Server_Attack();
@@ -96,7 +172,11 @@ void AMCharacter::RequestAttack(){
 }
 
 void AMCharacter::Server_Attack_Implementation(){
-	/** Runs on the server when the owning client attacks; the cooldown is checked again because the client cannot be trusted. */
+	/** Runs on the server when the owning client attacks; death and the cooldown are checked again because the client cannot be trusted. */
+	if (IsDead()){
+		UE_LOG(LogMCombat, Warning, TEXT("[Server] Rejected attack from %s: character is dead"), *GetOwnerName());
+		return;
+	}
 	if (!IsAttackReady(AttackCooldownTolerance)){
 		UE_LOG(LogMCombat, Warning, TEXT("[Server] Rejected attack from %s: cooldown not finished (%.2fs left)"),
 			*GetOwnerName(), AttackCooldown - (GetWorld()->GetTimeSeconds() - LastAttackTime));
@@ -110,7 +190,24 @@ void AMCharacter::Server_Attack_Implementation(){
 void AMCharacter::Multicast_PlayAttack_Implementation(){
 	/** Plays the attack animation on all machines except the one that already played it. */
 	if (IsLocallyControlled()) return;
-	PlayAttackMontage();
+	PlayMontage(AttackMontage);
+}
+
+void AMCharacter::Multicast_PlayHitReact_Implementation(EHitDirection Direction){
+	/** Plays the hit reaction for the given side on all machines, including the owner of the hit character, since only the server knows about the hit. */
+	if (UAnimMontage* const* Montage = HitReactMontages.Find(Direction)) PlayMontage(*Montage);
+}
+
+EHitDirection AMCharacter::GetHitDirection(const AActor* DamageCauser) const{
+	/** Returns the side of the character the attacker stands on, comparing the direction to the attacker with the forward and right vectors. */
+	if (!DamageCauser) return EHitDirection::Front;
+
+	const FVector ToCauser = (DamageCauser->GetActorLocation() - GetActorLocation()).GetSafeNormal2D();
+	const float ForwardDot = FVector::DotProduct(GetActorForwardVector(), ToCauser);
+	const float RightDot = FVector::DotProduct(GetActorRightVector(), ToCauser);
+
+	if (FMath::Abs(ForwardDot) >= FMath::Abs(RightDot)) return ForwardDot >= 0.f ? EHitDirection::Front : EHitDirection::Back;
+	return RightDot >= 0.f ? EHitDirection::Right : EHitDirection::Left;
 }
 
 bool AMCharacter::IsAttackReady(float Tolerance) const{
@@ -135,7 +232,7 @@ void AMCharacter::PerformAttack(){
 	TSet<AActor*> DamagedActors;
 	for (const FHitResult& Hit : Hits){
 		AMCharacter* Target = Cast<AMCharacter>(Hit.GetActor());
-		if (!Target || DamagedActors.Contains(Target) || Target->GetGenericTeamId() == TeamID) continue;
+		if (!Target || DamagedActors.Contains(Target) || Target->IsDead() || Target->GetGenericTeamId() == TeamID) continue;
 
 		DamagedActors.Add(Target);
 		UGameplayStatics::ApplyDamage(Target, AttackDamage, GetController(), this, UDamageType::StaticClass());
@@ -147,11 +244,10 @@ void AMCharacter::PerformAttack(){
 	}
 }
 
-void AMCharacter::PlayAttackMontage(){
-	/** Plays the attack montage on the character mesh; skipped on a dedicated server where nobody sees it. */
+void AMCharacter::PlayMontage(UAnimMontage* Montage){
+	/** Plays the given montage on the character mesh; skipped on a dedicated server where nobody sees it. */
 	if (GetNetMode() == NM_DedicatedServer) return;
 
 	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
-	if (AnimInstance && AttackMontage) AnimInstance->Montage_Play(AttackMontage);
-	
+	if (AnimInstance && Montage) AnimInstance->Montage_Play(Montage);
 }
