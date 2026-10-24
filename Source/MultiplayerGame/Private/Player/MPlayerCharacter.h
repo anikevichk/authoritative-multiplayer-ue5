@@ -33,7 +33,10 @@ private:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
 	class UInputAction* MoveInputAction;
-	
+
+	UPROPERTY(EditDefaultsOnly, Category = "Input")
+	class UInputAction* AttackInputAction;
+
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
 	class UInputMappingContext* InputMappingContext;
 

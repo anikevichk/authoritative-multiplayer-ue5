@@ -3,6 +3,9 @@
 
 #include "Character/MCharacter.h"
 #include "Components/SkeletalMeshComponent.h"
+#include "Animation/AnimInstance.h"
+#include "Animation/AnimMontage.h"
+#include "Kismet/GameplayStatics.h"
 #include "Net/UnrealNetwork.h"
 #include "Player/MPlayerState.h"
 #include "MLogCategories.h"
@@ -78,4 +81,77 @@ FString AMCharacter::GetOwnerName() const{
 FGenericTeamId AMCharacter::GetGenericTeamId() const{
 	/** Returns the team of the character used by AI perception. */
 	return TeamID;
+}
+
+void AMCharacter::RequestAttack(){
+	/** Starts an attack: the owning client plays the animation at once (prediction) and asks the server to resolve the hit. */
+	if (!IsAttackReady()) return;
+
+	LastAttackTime = GetWorld()->GetTimeSeconds();
+	PlayAttackMontage();
+
+	if (HasAuthority()) PerformAttack();
+	else Server_Attack();
+	
+}
+
+void AMCharacter::Server_Attack_Implementation(){
+	/** Runs on the server when the owning client attacks; the cooldown is checked again because the client cannot be trusted. */
+	if (!IsAttackReady(AttackCooldownTolerance)){
+		UE_LOG(LogMCombat, Warning, TEXT("[Server] Rejected attack from %s: cooldown not finished (%.2fs left)"),
+			*GetOwnerName(), AttackCooldown - (GetWorld()->GetTimeSeconds() - LastAttackTime));
+		return;
+	}
+
+	LastAttackTime = GetWorld()->GetTimeSeconds();
+	PerformAttack();
+}
+
+void AMCharacter::Multicast_PlayAttack_Implementation(){
+	/** Plays the attack animation on all machines except the one that already played it. */
+	if (IsLocallyControlled()) return;
+	PlayAttackMontage();
+}
+
+bool AMCharacter::IsAttackReady(float Tolerance) const{
+	/** Returns true when the attack cooldown has passed; the tolerance absorbs network jitter between requests. */
+	return GetWorld()->GetTimeSeconds() - LastAttackTime >= AttackCooldown - Tolerance;
+}
+
+void AMCharacter::PerformAttack(){
+	/** Sweeps a sphere in front of the character and damages every enemy character it hits. Server only. */
+	Multicast_PlayAttack();
+
+	const FVector Start = GetActorLocation();
+	const FVector End = Start + GetActorForwardVector() * AttackRange;
+
+	FCollisionQueryParams QueryParams;
+	QueryParams.AddIgnoredActor(this);
+
+	TArray<FHitResult> Hits;
+	GetWorld()->SweepMultiByObjectType(Hits, Start, End, FQuat::Identity,
+		FCollisionObjectQueryParams(ECC_Pawn), FCollisionShape::MakeSphere(AttackRadius), QueryParams);
+
+	TSet<AActor*> DamagedActors;
+	for (const FHitResult& Hit : Hits){
+		AMCharacter* Target = Cast<AMCharacter>(Hit.GetActor());
+		if (!Target || DamagedActors.Contains(Target) || Target->GetGenericTeamId() == TeamID) continue;
+
+		DamagedActors.Add(Target);
+		UGameplayStatics::ApplyDamage(Target, AttackDamage, GetController(), this, UDamageType::StaticClass());
+		UE_LOG(LogMCombat, Log, TEXT("[Server] %s hit %s for %.0f damage"), *GetOwnerName(), *Target->GetOwnerName(), AttackDamage);
+	}
+
+	if (DamagedActors.IsEmpty()){
+		UE_LOG(LogMCombat, Log, TEXT("[Server] %s attacked and missed"), *GetOwnerName());
+	}
+}
+
+void AMCharacter::PlayAttackMontage(){
+	/** Plays the attack montage on the character mesh; skipped on a dedicated server where nobody sees it. */
+	if (GetNetMode() == NM_DedicatedServer) return;
+
+	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+	if (AnimInstance && AttackMontage) AnimInstance->Montage_Play(AttackMontage);
+	
 }

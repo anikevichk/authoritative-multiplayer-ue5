@@ -30,7 +30,39 @@ public:
 	virtual void SetGenericTeamId(const FGenericTeamId& NewTeamID) override;
 	virtual FGenericTeamId GetGenericTeamId() const override;
 
+	void RequestAttack();
+
 private:
+	UPROPERTY(EditDefaultsOnly, Category = "Combat")
+	class UAnimMontage* AttackMontage;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Combat")
+	float AttackDamage = 20.f;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Combat")
+	float AttackRange = 150.f;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Combat")
+	float AttackRadius = 60.f;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Combat")
+	float AttackCooldown = 0.8f;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Combat")
+	float AttackCooldownTolerance = 0.1f;
+
+	float LastAttackTime = -1000.f;
+
+	UFUNCTION(Server, Reliable)
+	void Server_Attack();
+
+	UFUNCTION(NetMulticast, Unreliable)
+	void Multicast_PlayAttack();
+
+	bool IsAttackReady(float Tolerance = 0.f) const;
+	void PerformAttack();
+	void PlayAttackMontage();
+
 	UPROPERTY(ReplicatedUsing = OnRep_TeamID)
 	FGenericTeamId TeamID;
 

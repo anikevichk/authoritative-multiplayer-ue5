@@ -38,13 +38,14 @@ void AMPlayerCharacter::PawnClientRestart(){
 }
 
 void AMPlayerCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent){
-	/** Binds the jump, look and move input actions. */
+	/** Binds the jump, look, move and attack input actions. */
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 	UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerInputComponent);
 	if (EnhancedInputComponent){
 		EnhancedInputComponent->BindAction(JumpInputAction, ETriggerEvent::Triggered, this, &AMPlayerCharacter::Jump);
 		EnhancedInputComponent->BindAction(LookInputAction, ETriggerEvent::Triggered, this, &AMPlayerCharacter::HandleLookInput);
 		EnhancedInputComponent->BindAction(MoveInputAction, ETriggerEvent::Triggered, this, &AMPlayerCharacter::HandleMoveInput);
+		EnhancedInputComponent->BindAction(AttackInputAction, ETriggerEvent::Started, this, &AMPlayerCharacter::RequestAttack);
 	}
 }
 
