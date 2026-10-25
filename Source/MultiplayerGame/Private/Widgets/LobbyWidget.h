@@ -18,15 +18,6 @@ class ULobbyWidget : public UUserWidget
 public:
 	virtual void NativeConstruct() override;
 private:
-	UPROPERTY(meta = (BindWidget))
-	class UWidgetSwitcher* MainSwitcher;
-
-	UPROPERTY(meta = (BindWidget))
-	class UWidget* TeamSelectionRoot;
-
-	UPROPERTY(meta = (BindWidget))
-	class UWidget* GameRoot;
-
 	UPROPERTY(meta = (BindWidgetOptional))
 	class UTextBlock* CountdownText;
 
@@ -54,6 +45,5 @@ private:
 	void UpdatePlayerSelectionDisplay(const TArray<FPlayerSelection>& PlayerSelections);
 	void UpdateStartCountdownDisplay(int32 SecondsLeft);
 
-	void SwitchToGame();
 };
 

@@ -19,23 +19,13 @@ FPlayerSelection::FPlayerSelection(uint8 ValidSlot, const APlayerState* PlayerSt
 }
 
 bool FPlayerSelection::IsForPlayer(const APlayerState* PlayerState) const {
-	/** Returns true if the selection belongs to the player: by name in the editor, by unique ID in builds. */
+	/** Returns true if the selection belongs to the player, compared by unique ID. */
 	if (!PlayerState) return false;
-
-	#if WITH_EDITOR
-		return PlayerState->GetPlayerName() == GetPlayerNickname();
-	#else
-		return PlayerState->GetUniqueId() == GetPlayerUniqueID();
-	#endif
+	return PlayerState->GetUniqueId() == GetPlayerUniqueID();
 }
 
-bool FPlayerSelection::IsValid() const {
-	/** Returns true if the selection has a valid player and slot; always true in the editor. */
-	#if WITH_EDITOR
-		return true;
-	#else
-		if (!PlayerUniqueID.IsValid() || Slot >= UMNetStatics::GetPlayerCountPerTeam()*2)
-			return false;
-		return true;
-	#endif
+bool FPlayerSelection::HasValidPlayerAndSlot() const {
+	/** Returns true if the selection has a valid player and slot. */
+	if (!PlayerUniqueID.IsValid() || Slot >= UMNetStatics::GetPlayerCountPerTeam()*2) return false;
+	return true;
 }

@@ -17,16 +17,9 @@ class UMAnimInstance : public UAnimInstance
 public:
 	virtual void NativeInitializeAnimation() override;
 	virtual void NativeUpdateAnimation(float DeltaSeconds) override;
-	virtual void NativeThreadSafeUpdateAnimation(float DeltaSeconds) override;
-
-	UFUNCTION(BlueprintCallable, meta=(BlueprintThreadSafe))
-	float GetMovementSpeed() const {return MovementSpeed;}
 
 	UFUNCTION(BlueprintCallable, meta=(BlueprintThreadSafe))
 	bool isMoving() const { return MovementSpeed != 0;}
-
-	UFUNCTION(BlueprintCallable, meta=(BlueprintThreadSafe))
-	float GetYawSpeed() const {return YawSpeed;}
 
 	UFUNCTION(BlueprintCallable, meta=(BlueprintThreadSafe))
 	float GetSmoothedYawSpeed() const {return SmoothedYawSpeed;}

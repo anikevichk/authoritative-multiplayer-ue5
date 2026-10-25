@@ -31,8 +31,3 @@ void UMAnimInstance::NativeUpdateAnimation(float DeltaSeconds) {
 
 	if (OwnerMovementComponent) bIsJumping = OwnerMovementComponent->IsFalling();
 }
-
-void UMAnimInstance::NativeThreadSafeUpdateAnimation(float DeltaSeconds) {
-	/** Thread-safe animation update. */
-	Super::NativeThreadSafeUpdateAnimation(DeltaSeconds);
-}

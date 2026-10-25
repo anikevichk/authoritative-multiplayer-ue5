@@ -6,8 +6,7 @@ void AMPlayerController::BeginPlay(){
 	/** Switches the local player to game-only input and removes the lobby widgets. */
 	Super::BeginPlay();
 
-	if (IsLocalController())
-	{
+	if (IsLocalController()){
 		UWidgetLayoutLibrary::RemoveAllWidgets(this);
 
 		FInputModeGameOnly InputMode;

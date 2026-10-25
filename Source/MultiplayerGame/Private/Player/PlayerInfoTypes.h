@@ -20,7 +20,7 @@ public:
 	FORCEINLINE FString GetPlayerNickname() const {return PlayerName;}
 
 	bool IsForPlayer(const APlayerState* PlayerState) const;
-	bool IsValid() const;
+	bool HasValidPlayerAndSlot() const;
 
 	uint8 InvalidSlot = 255;
 private:

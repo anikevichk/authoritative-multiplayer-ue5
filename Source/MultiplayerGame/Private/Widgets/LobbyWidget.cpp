@@ -3,7 +3,6 @@
 
 #include "Widgets/LobbyWidget.h"
 
-#include "Components/Button.h"
 #include "Components/UniformGridSlot.h"
 #include "Components/UniformGridPanel.h"
 #include "Widgets/TeamSelectionWidget.h"
@@ -11,7 +10,6 @@
 #include "Player/LobbyPlayerController.h"
 #include "Framework/MGameState.h"
 #include "Components/TextBlock.h"
-#include "Components/WidgetSwitcher.h"
 
 void ULobbyWidget::NativeConstruct() {
 	/** Builds the slot grid and connects the widget to the game state and the player controller. */
@@ -19,8 +17,7 @@ void ULobbyWidget::NativeConstruct() {
 	
 	ClearAndLoadTeamSelectionSlots();
 	ConfigGameState();
-	LobbyPlayerController = GetOwningPlayer<ALobbyPlayerController>();	
-	if (LobbyPlayerController) LobbyPlayerController->OnSwitchToGame.BindUObject(this, &ULobbyWidget::SwitchToGame);
+	LobbyPlayerController = GetOwningPlayer<ALobbyPlayerController>();
 }
 
 void ULobbyWidget::ClearAndLoadTeamSelectionSlots() {
@@ -75,7 +72,7 @@ void ULobbyWidget::UpdatePlayerSelectionDisplay(const TArray<FPlayerSelection>& 
 	}
 
 	for ( const FPlayerSelection& PlayerSelection : PlayerSelections) {
-		if (!PlayerSelection.IsValid()) continue;
+		if (!PlayerSelection.HasValidPlayerAndSlot()) continue;
 		TeamSelectionSlots[PlayerSelection.GetSlot()]->UpdateSlotInfo(PlayerSelection.GetPlayerNickname());
 	}
 }
@@ -88,7 +85,3 @@ void ULobbyWidget::UpdateStartCountdownDisplay(int32 SecondsLeft) {
 	else CountdownText->SetText(FText::FromString(FString::Printf(TEXT("Match starts in %d"), SecondsLeft)));
 }
 
-void ULobbyWidget::SwitchToGame() {
-	/** Switches to the game screen; currently unused. */
-	MainSwitcher->SetActiveWidget(GameRoot);
-}

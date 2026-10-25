@@ -53,12 +53,7 @@ void AMGameState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifet
 	/** Replicates the slot selections and the start countdown to all clients. */
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
-	DOREPLIFETIME_CONDITION_NOTIFY(
-		AMGameState,
-		PlayerSelectionArray,
-		COND_None,
-		REPNOTIFY_Always
-	);
+	DOREPLIFETIME(AMGameState, PlayerSelectionArray);
 	DOREPLIFETIME(AMGameState, StartCountdown);
 }
 

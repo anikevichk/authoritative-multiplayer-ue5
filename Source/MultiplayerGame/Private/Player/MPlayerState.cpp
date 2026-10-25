@@ -20,9 +20,8 @@ void AMPlayerState::CopyProperties(APlayerState* PlayerState) {
 	/** Keeps the team when the PlayerState is recreated during seamless travel. */
 	Super::CopyProperties(PlayerState);
 
-	if (AMPlayerState* NewPlayerState = Cast<AMPlayerState>(PlayerState)) {
-		NewPlayerState->TeamID = TeamID;
-	}
+	if (AMPlayerState* NewPlayerState = Cast<AMPlayerState>(PlayerState)) NewPlayerState->TeamID = TeamID;
+	
 }
 
 void AMPlayerState::SetTeamID(const FGenericTeamId& NewTeamID) {

@@ -17,9 +17,6 @@ public:
 	UFUNCTION(BlueprintPure, Category = "Teams")
 	static uint8 GetPlayerCountPerTeam();
 
-	UFUNCTION(BlueprintCallable, Category = "Teams")
-	static void SetPlayerCountPerTeam(uint8 NewValue);
-
 	UFUNCTION(BlueprintPure, Category = "Teams")
 	static uint8 GetTeamForSlot(uint8 SlotID);
 

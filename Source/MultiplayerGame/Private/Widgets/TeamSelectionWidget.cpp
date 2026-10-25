@@ -16,8 +16,7 @@ void UTeamSelectionWidget::UpdateSlotInfo(const FString& PlayerNickname) {
 void UTeamSelectionWidget::NativeConstruct() {
 	/** Binds the click of the slot button. */
 	Super::NativeConstruct();
-	if (SelectButton)
-		SelectButton->OnClicked.AddDynamic(this, &UTeamSelectionWidget::SelectButtonClicked);
+	if (SelectButton) SelectButton->OnClicked.AddDynamic(this, &UTeamSelectionWidget::SelectButtonClicked);
 }
 
 void UTeamSelectionWidget::SelectButtonClicked() {

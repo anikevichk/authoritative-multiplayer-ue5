@@ -35,16 +35,6 @@ void AMCharacter::BeginPlay(){
 	UpdateHealthBar();
 }
 
-void AMCharacter::Tick(float DeltaTime){
-	Super::Tick(DeltaTime);
-
-}
-
-void AMCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent){
-	/** Input is bound in AMPlayerCharacter. */
-	Super::SetupPlayerInputComponent(PlayerInputComponent);
-}
-
 void AMCharacter::PossessedBy(AController* NewController){
 	/** Takes the team chosen in the lobby from the player state of the new controller. Server only. */
 	Super::PossessedBy(NewController);
