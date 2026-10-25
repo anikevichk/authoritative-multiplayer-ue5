@@ -43,6 +43,9 @@ public:
 
 	void RequestAttack();
 
+	UFUNCTION(Exec)
+	void CheatSpamAttack(int32 Count = 10);
+
 private:
 	UPROPERTY(VisibleAnywhere, Category = "UI")
 	class UWidgetComponent* HealthBarComponent;

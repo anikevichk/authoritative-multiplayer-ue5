@@ -50,7 +50,7 @@ STOP=0
 # Default log filter: engine messages only from Warning up, project categories in full.
 # Known harmless engine warnings (cursor mapping, stale HLOD actors, slow package loads,
 # the Paragon IK rig asset) are limited to errors.
-LOG_FILTER="global Warning, LogMGame Log, LogMLobby Log, LogMTeam Log, LogLiveCoding off, LogPlayerManagement Error, LogWorldPartition Error, LogStreaming Error, LogLinker Error"
+LOG_FILTER="global Warning, LogMGame Log, LogMLobby Log, LogMTeam Log, LogMCombat Log, LogLiveCoding off, LogPlayerManagement Error, LogWorldPartition Error, LogStreaming Error, LogLinker Error"
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_DIR="$(dirname "$SCRIPT_DIR")"
