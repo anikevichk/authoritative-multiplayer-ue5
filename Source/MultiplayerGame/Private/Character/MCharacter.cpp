@@ -12,6 +12,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Net/UnrealNetwork.h"
 #include "Player/MPlayerState.h"
+#include "Framework/MGameMode.h"
 #include "Widgets/HealthBarWidget.h"
 #include "MLogCategories.h"
 
@@ -67,6 +68,7 @@ float AMCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEven
 	if (IsDead()){
 		UE_LOG(LogMCombat, Log, TEXT("[Server] %s died"), *GetOwnerName());
 		HandleDeath();
+		if (AMGameMode* GameMode = GetWorld()->GetAuthGameMode<AMGameMode>()) GameMode->CharacterKilled(this, EventInstigator);
 	}
 	else{
 		Multicast_PlayHitReact(GetHitDirection(DamageCauser));

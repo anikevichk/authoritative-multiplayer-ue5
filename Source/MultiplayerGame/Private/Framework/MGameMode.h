@@ -7,7 +7,7 @@
 #include "MGameMode.generated.h"
 
 /**
- * 
+ *
  */
 UCLASS()
 class AMGameMode : public AGameModeBase
@@ -17,6 +17,13 @@ class AMGameMode : public AGameModeBase
 public:
 	virtual void PostLogin(APlayerController* NewPlayer) override;
 
+	void CharacterKilled(class AMCharacter* Victim, AController* Killer);
+
 private:
 	int32 JoinedPlayerCount = 0;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Respawn")
+	float RespawnDelay = 10.f;
+
+	void RespawnPlayer(TWeakObjectPtr<AController> Controller);
 };
