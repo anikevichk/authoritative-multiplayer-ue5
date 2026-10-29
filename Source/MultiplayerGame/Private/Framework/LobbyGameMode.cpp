@@ -8,8 +8,9 @@
 #include "TimerManager.h"
 
 ALobbyGameMode::ALobbyGameMode() {
-	/** Keeps clients connected and keeps their PlayerStates when the server moves to the game map. */
+	/** Keeps clients connected and keeps their PlayerStates when the server moves to the game map; the lobby has no match rules. */
 	bUseSeamlessTravel = true;
+	bMatchRulesEnabled = false;
 }
 
 void ALobbyGameMode::BeginPlay() {

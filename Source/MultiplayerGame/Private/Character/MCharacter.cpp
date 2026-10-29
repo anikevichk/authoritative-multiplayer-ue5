@@ -13,6 +13,7 @@
 #include "Net/UnrealNetwork.h"
 #include "Player/MPlayerState.h"
 #include "Framework/MGameMode.h"
+#include "Framework/MGameState.h"
 #include "Widgets/HealthBarWidget.h"
 #include "MLogCategories.h"
 
@@ -172,7 +173,12 @@ void AMCharacter::CheatSpamAttack(int32 Count){
 }
 
 void AMCharacter::Server_Attack_Implementation(){
-	/** Runs on the server when the owning client attacks; death and the cooldown are checked again because the client cannot be trusted. */
+	/** Runs on the server when the owning client attacks; the match state, death and the cooldown are checked again because the client cannot be trusted. */
+	const AMGameState* MGameState = GetWorld()->GetGameState<AMGameState>();
+	if (MGameState && MGameState->IsMatchOver()){
+		UE_LOG(LogMCombat, Warning, TEXT("[Server] Rejected attack from %s: match is over"), *GetOwnerName());
+		return;
+	}
 	if (IsDead()){
 		UE_LOG(LogMCombat, Warning, TEXT("[Server] Rejected attack from %s: character is dead"), *GetOwnerName());
 		return;

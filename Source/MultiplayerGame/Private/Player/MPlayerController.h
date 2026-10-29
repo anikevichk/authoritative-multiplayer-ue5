@@ -18,6 +18,15 @@ public:
 	void Client_ShowDeathScreen(const FString& KillerName, float RespawnServerTime);
 
 private:
+	void BindMatchState();
+	void HandleMatchOver(int32 WinningTeam);
+
+	UPROPERTY(EditDefaultsOnly, Category = "UI")
+	TSubclassOf<class UMatchHUDWidget> MatchHUDWidgetClass;
+
+	UPROPERTY()
+	class UMatchHUDWidget* MatchHUDWidget;
+
 	UPROPERTY(EditDefaultsOnly, Category = "UI")
 	TSubclassOf<class UDeathScreenWidget> DeathScreenWidgetClass;
 

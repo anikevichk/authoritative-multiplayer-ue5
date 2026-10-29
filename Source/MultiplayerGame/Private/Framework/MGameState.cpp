@@ -55,6 +55,47 @@ void AMGameState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifet
 
 	DOREPLIFETIME(AMGameState, PlayerSelectionArray);
 	DOREPLIFETIME(AMGameState, StartCountdown);
+	DOREPLIFETIME(AMGameState, TeamScores);
+	DOREPLIFETIME(AMGameState, MatchEndServerTime);
+	DOREPLIFETIME(AMGameState, bMatchOver);
+	DOREPLIFETIME(AMGameState, WinningTeam);
+}
+
+AMGameState::AMGameState() {
+	/** Starts both teams with zero points. */
+	TeamScores.Init(0, 2);
+}
+
+void AMGameState::StartMatch(float Duration) {
+	/** Sets the server time when the match ends because of the time limit. Server only. */
+	if (!HasAuthority()) return;
+
+	MatchEndServerTime = GetServerWorldTimeSeconds() + Duration;
+}
+
+int32 AMGameState::AddTeamScore(uint8 Team) {
+	/** Gives the team one point and returns its new score. Server only. */
+	if (!HasAuthority() || !TeamScores.IsValidIndex(Team)) return 0;
+
+	return ++TeamScores[Team];
+}
+
+void AMGameState::EndMatch(int32 InWinningTeam) {
+	/** Marks the match as over with the given winner, or INDEX_NONE for a draw. Server only. */
+	if (!HasAuthority()) return;
+
+	bMatchOver = true;
+	WinningTeam = InWinningTeam;
+}
+
+void AMGameState::OnRep_MatchOver() {
+	/** Announces the end of the match with the winning team on clients. */
+	if (bMatchOver) OnMatchOver.Broadcast(WinningTeam);
+}
+
+int32 AMGameState::GetTeamScore(uint8 Team) const {
+	/** Returns the points of the team, or zero for an unknown team. */
+	return TeamScores.IsValidIndex(Team) ? TeamScores[Team] : 0;
 }
 
 const TArray<FPlayerSelection>& AMGameState::GetPlayerSelectionChange() const {
