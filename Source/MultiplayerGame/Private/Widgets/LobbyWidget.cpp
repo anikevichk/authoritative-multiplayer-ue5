@@ -6,7 +6,7 @@
 #include "Components/UniformGridSlot.h"
 #include "Components/UniformGridPanel.h"
 #include "Widgets/TeamSelectionWidget.h"
-#include "Network/MNetStatics.h"
+#include "Framework/MTeamStatics.h"
 #include "Player/LobbyPlayerController.h"
 #include "Framework/MGameState.h"
 #include "Components/TextBlock.h"
@@ -23,7 +23,7 @@ void ULobbyWidget::NativeConstruct() {
 void ULobbyWidget::ClearAndLoadTeamSelectionSlots() {
 	/** Creates the slot buttons, one column per team. */
 	TeamSelectionPanel->ClearChildren();
-	const int32 PlayersPerTeam = UMNetStatics::GetPlayerCountPerTeam();
+	const int32 PlayersPerTeam = UMTeamStatics::GetPlayerCountPerTeam();
 
 	for (int32 i = 0; i < PlayersPerTeam * 2; i++){
 		UTeamSelectionWidget* SelectionSlot = CreateWidget<UTeamSelectionWidget>(this, TeamSelectionWidgetClass);

@@ -3,7 +3,7 @@
 
 #include "Player/PlayerInfoTypes.h"
 #include "GameFramework/PlayerState.h"
-#include "Network/MNetStatics.h"
+#include "Framework/MTeamStatics.h"
 
 FPlayerSelection::FPlayerSelection()
 	:Slot{InvalidSlot}, PlayerUniqueID{FUniqueNetIdRepl::Invalid()}, PlayerName {} {
@@ -18,7 +18,7 @@ FPlayerSelection::FPlayerSelection(uint8 ValidSlot, const APlayerState* PlayerSt
 	}
 }
 
-bool FPlayerSelection::IsForPlayer(const APlayerState* PlayerState) const {
+bool FPlayerSelection::BelongsToPlayer(const APlayerState* PlayerState) const {
 	/** Returns true if the selection belongs to the player, compared by unique ID. */
 	if (!PlayerState) return false;
 	return PlayerState->GetUniqueId() == GetPlayerUniqueID();
@@ -26,6 +26,6 @@ bool FPlayerSelection::IsForPlayer(const APlayerState* PlayerState) const {
 
 bool FPlayerSelection::HasValidPlayerAndSlot() const {
 	/** Returns true if the selection has a valid player and slot. */
-	if (!PlayerUniqueID.IsValid() || Slot >= UMNetStatics::GetPlayerCountPerTeam()*2) return false;
+	if (!PlayerUniqueID.IsValid() || Slot >= UMTeamStatics::GetPlayerCountPerTeam()*2) return false;
 	return true;
 }

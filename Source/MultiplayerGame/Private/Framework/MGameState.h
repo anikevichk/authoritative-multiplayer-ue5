@@ -75,6 +75,10 @@ private:
 	UFUNCTION()
 	void OnRep_PlayerSelectionArray();
 
+	bool CanTakeSlot(const APlayerState* RequestingPlayer, uint8 DesiredSlot, FString& OutRejectReason) const;
+	TArray<FPlayerSelection> GetSelectionsAfterMove(const APlayerState* RequestingPlayer, uint8 DesiredSlot) const;
+	static bool HasPlayersInBothTeams(const TArray<FPlayerSelection>& Selections);
+
 	UPROPERTY(ReplicatedUsing = OnRep_StartCountdown)
 	int32 StartCountdown = -1;
 

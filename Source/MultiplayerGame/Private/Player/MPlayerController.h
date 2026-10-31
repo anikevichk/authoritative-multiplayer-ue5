@@ -10,6 +10,8 @@ class AMPlayerController : public APlayerController
 	GENERATED_BODY()
 
 public:
+	AMPlayerController();
+
 	virtual void BeginPlay() override;
 	virtual void OnPossess(APawn* NewPawn) override;
 	virtual void AcknowledgePossession(APawn* NewPawn) override;

@@ -164,14 +164,6 @@ void AMCharacter::RequestAttack(){
 	
 }
 
-void AMCharacter::CheatSpamAttack(int32 Count){
-	/** Test console command: sends several attack requests at once, skipping the client cooldown, to show that the server rejects them. */
-	if (HasAuthority()) return;
-
-	UE_LOG(LogMCombat, Warning, TEXT("[Client] Sending %d attack requests without the cooldown check"), Count);
-	for (int32 i = 0; i < Count; i++) Server_Attack();
-}
-
 void AMCharacter::Server_Attack_Implementation(){
 	/** Runs on the server when the owning client attacks; the match state, death and the cooldown are checked again because the client cannot be trusted. */
 	const AMGameState* MGameState = GetWorld()->GetGameState<AMGameState>();

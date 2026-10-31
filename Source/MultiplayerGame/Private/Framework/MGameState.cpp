@@ -1,7 +1,7 @@
 #include "Framework/MGameState.h"
 #include "Net/UnrealNetwork.h"
 #include "MLogCategories.h"
-#include "Network/MNetStatics.h"
+#include "Framework/MTeamStatics.h"
 #include "Player/MPlayerState.h"
 
 void AMGameState::RequestPlayerSelectionChange(APlayerState* RequestingPlayer, uint8 DesiredSlot) {
@@ -9,24 +9,53 @@ void AMGameState::RequestPlayerSelectionChange(APlayerState* RequestingPlayer, u
 	if (!HasAuthority()) return;
 
 	const FString PlayerName = RequestingPlayer ? RequestingPlayer->GetPlayerName() : TEXT("unknown player");
-	if (IsSlotTaken(DesiredSlot)) {
-		UE_LOG(LogMLobby, Log, TEXT("[Server] %s asked for slot %d, rejected: the slot is taken"), *PlayerName, DesiredSlot);
+	FString RejectReason;
+	if (!CanTakeSlot(RequestingPlayer, DesiredSlot, RejectReason)) {
+		UE_LOG(LogMLobby, Warning, TEXT("[Server] %s asked for slot %d, rejected: %s"), *PlayerName, DesiredSlot, *RejectReason);
 		return;
 	}
-	
-	FPlayerSelection* PlayerSelectionPtr = PlayerSelectionArray.FindByPredicate([&](const FPlayerSelection& PlayerSelection) {
-		return PlayerSelection.IsForPlayer(RequestingPlayer);
+
+	PlayerSelectionArray = GetSelectionsAfterMove(RequestingPlayer, DesiredSlot);
+
+	if (AMPlayerState* MPlayerState = Cast<AMPlayerState>(RequestingPlayer)) {
+		MPlayerState->SetTeamID(FGenericTeamId(UMTeamStatics::GetTeamForSlot(DesiredSlot)));
+	}
+	UE_LOG(LogMLobby, Log, TEXT("[Server] %s took slot %d, team %d"), *PlayerName, DesiredSlot, UMTeamStatics::GetTeamForSlot(DesiredSlot));	
+
+	OnPlayerSelectionUpdated.Broadcast(PlayerSelectionArray);
+}
+
+bool AMGameState::CanTakeSlot(const APlayerState* RequestingPlayer, uint8 DesiredSlot, FString& OutRejectReason) const {
+	/** Checks whether the player may move to the slot; on rejection fills the reason used in the server log. */
+	if (!UMTeamStatics::IsValidSlot(DesiredSlot)) {
+		OutRejectReason = FString::Printf(TEXT("the slot does not exist (0-%d)"), UMTeamStatics::GetSlotCount() - 1);
+		return false;
+	}
+	if (StartCountdown == 0) {
+		OutRejectReason = TEXT("the match is already starting");
+		return false;
+	}
+	if (IsSlotTaken(DesiredSlot)) {
+		OutRejectReason = TEXT("the slot is taken");
+		return false;
+	}
+	if (StartCountdown > 0 && !HasPlayersInBothTeams(GetSelectionsAfterMove(RequestingPlayer, DesiredSlot))) {
+		OutRejectReason = TEXT("the move would leave a team empty during the start countdown");
+		return false;
+	}
+	return true;
+}
+
+TArray<FPlayerSelection> AMGameState::GetSelectionsAfterMove(const APlayerState* RequestingPlayer, uint8 DesiredSlot) const {
+	/** Returns a copy of the slot selections with the player moved to the slot or added to it. */
+	TArray<FPlayerSelection> NewSelectionArray = PlayerSelectionArray;
+	FPlayerSelection* PlayerSelectionPtr = NewSelectionArray.FindByPredicate([&](const FPlayerSelection& PlayerSelection) {
+		return PlayerSelection.BelongsToPlayer(RequestingPlayer);
 	});
 
 	if (PlayerSelectionPtr) PlayerSelectionPtr->SetSlot(DesiredSlot);
-	else PlayerSelectionArray.Add(FPlayerSelection(DesiredSlot, RequestingPlayer));
-
-	if (AMPlayerState* MPlayerState = Cast<AMPlayerState>(RequestingPlayer)) {
-		MPlayerState->SetTeamID(FGenericTeamId(UMNetStatics::GetTeamForSlot(DesiredSlot)));
-	}
-	UE_LOG(LogMLobby, Log, TEXT("[Server] %s took slot %d, team %d"), *PlayerName, DesiredSlot, UMNetStatics::GetTeamForSlot(DesiredSlot));	
-
-	OnPlayerSelectionUpdated.Broadcast(PlayerSelectionArray);
+	else NewSelectionArray.Add(FPlayerSelection(DesiredSlot, RequestingPlayer));
+	return NewSelectionArray;
 }
 
 void AMGameState::RemovePlayerSelection(const APlayerState* LeavingPlayer) {
@@ -34,7 +63,7 @@ void AMGameState::RemovePlayerSelection(const APlayerState* LeavingPlayer) {
 	if (!HasAuthority()) return;
 
 	const int32 RemovedCount = PlayerSelectionArray.RemoveAll([&](const FPlayerSelection& PlayerSelection) {
-		return PlayerSelection.IsForPlayer(LeavingPlayer);
+		return PlayerSelection.BelongsToPlayer(LeavingPlayer);
 	});
 
 	if (RemovedCount > 0) OnPlayerSelectionUpdated.Broadcast(PlayerSelectionArray);
@@ -106,13 +135,18 @@ const TArray<FPlayerSelection>& AMGameState::GetPlayerSelectionChange() const {
 bool AMGameState::CanStart() const {
 	/** Returns true when every player has picked a slot and both teams have players. */
 	if (PlayerArray.Num() == 0 || PlayerSelectionArray.Num() != PlayerArray.Num()) return false;
+	return HasPlayersInBothTeams(PlayerSelectionArray);
+}
 
+bool AMGameState::HasPlayersInBothTeams(const TArray<FPlayerSelection>& Selections) {
+	/** Returns true when both teams have at least one player in the given slot selections. */
 	bool bTeamHasPlayers[2] = {false, false};
-	for (const FPlayerSelection& PlayerSelection : PlayerSelectionArray) {
-		const uint8 Team = UMNetStatics::GetTeamForSlot(PlayerSelection.GetSlot());
-		bTeamHasPlayers[Team] = true;
+	for (const FPlayerSelection& PlayerSelection : Selections) {
+		const uint8 Team = UMTeamStatics::GetTeamForSlot(PlayerSelection.GetSlot());
+		if (Team < 2) bTeamHasPlayers[Team] = true;
+		if (bTeamHasPlayers[0] && bTeamHasPlayers[1]) return true;
 	}
-	return bTeamHasPlayers[0] && bTeamHasPlayers[1];
+	return false;
 }
 
 void AMGameState::SetStartCountdown(int32 NewValue) {

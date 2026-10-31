@@ -39,10 +39,9 @@ public:
 
 	void RequestAttack();
 
-	UFUNCTION(Exec)
-	void CheatSpamAttack(int32 Count = 10);
-
 private:
+	friend class UMCheatManager;
+
 	UPROPERTY(VisibleAnywhere, Category = "UI")
 	class UWidgetComponent* HealthBarComponent;
 

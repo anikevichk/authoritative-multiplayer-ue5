@@ -1,15 +1,22 @@
 #include "Player/MPlayerController.h"
 #include "Blueprint/WidgetLayoutLibrary.h"
+#include "Cheats/MCheatManager.h"
 #include "Framework/MGameState.h"
 #include "Widgets/DeathScreenWidget.h"
 #include "Widgets/MatchHUDWidget.h"
 #include "MLogCategories.h"
+
+AMPlayerController::AMPlayerController(){
+	/** Uses the project cheat manager that holds the test commands sending invalid requests. */
+	CheatClass = UMCheatManager::StaticClass();
+}
 
 void AMPlayerController::BeginPlay(){
 	/** Switches the local player to game-only input, removes the lobby widgets, shows the match HUD and starts listening for the end of the match. */
 	Super::BeginPlay();
 
 	if (IsLocalController()){
+		AddCheats(true);
 		UWidgetLayoutLibrary::RemoveAllWidgets(this);
 
 		if (MatchHUDWidgetClass){

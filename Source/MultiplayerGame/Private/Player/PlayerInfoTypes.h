@@ -19,7 +19,7 @@ public:
 	FORCEINLINE FUniqueNetIdRepl GetPlayerUniqueID() const {return PlayerUniqueID;}
 	FORCEINLINE FString GetPlayerNickname() const {return PlayerName;}
 
-	bool IsForPlayer(const APlayerState* PlayerState) const;
+	bool BelongsToPlayer(const APlayerState* PlayerState) const;
 	bool HasValidPlayerAndSlot() const;
 
 	uint8 InvalidSlot = 255;
