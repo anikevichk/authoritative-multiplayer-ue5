@@ -7,8 +7,11 @@
 #include "EngineUtils.h"
 #include "Framework/MGameState.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "GameFramework/PlayerStart.h"
 #include "GameFramework/PlayerState.h"
+#include "Kismet/GameplayStatics.h"
 #include "Player/MPlayerController.h"
+#include "Player/MPlayerState.h"
 #include "TimerManager.h"
 
 void AMGameMode::BeginPlay() {
@@ -21,13 +24,57 @@ void AMGameMode::BeginPlay() {
 	UE_LOG(LogMGame, Log, TEXT("[Server] Match started: %d kills to win, time limit %.0fs"), ScoreToWin, MatchDuration);
 }
 
+FString AMGameMode::InitNewPlayer(APlayerController* NewPlayerController, const FUniqueNetIdRepl& UniqueId, const FString& Options, const FString& Portal) {
+	/** Marks the player as a bot when the client connected with the ?Bot URL option; the flag is replicated with the player state. */
+	if (NewPlayerController && NewPlayerController->PlayerState) {
+		NewPlayerController->PlayerState->SetIsABot(UGameplayStatics::HasOption(Options, TEXT("Bot")));
+	}
+	return Super::InitNewPlayer(NewPlayerController, UniqueId, Options, Portal);
+}
+
 void AMGameMode::PostLogin(APlayerController* NewPlayer) {
-	/** Names every new player Player1, Player2, ... in the order they joined; the name is chosen by the server, not by the client. */
+	/** Names every new player Player1, Player2, ... and every bot Bot1, Bot2, ... in the order they joined; the name is chosen by the server, not by the client. */
 	Super::PostLogin(NewPlayer);
 
-	const FString PlayerName = FString::Printf(TEXT("Player%d"), ++JoinedPlayerCount);
+	const bool bIsBot = NewPlayer->PlayerState && NewPlayer->PlayerState->IsABot();
+	const FString PlayerName = bIsBot ? FString::Printf(TEXT("Bot%d"), ++JoinedBotCount) : FString::Printf(TEXT("Player%d"), ++JoinedPlayerCount);
 	ChangeName(NewPlayer, PlayerName, false);
 	UE_LOG(LogMGame, Log, TEXT("[Server] %s joined"), *PlayerName);
+}
+
+AActor* AMGameMode::ChoosePlayerStart_Implementation(AController* Player) {
+	/** Picks a player start of the player's team (tagged Team0 or Team1), farthest from every living character so that players do not spawn inside each other; starts without a team tag are used only when the team has none. */
+	const AMPlayerState* MPlayerState = Player ? Player->GetPlayerState<AMPlayerState>() : nullptr;
+	const FName TeamTag = MPlayerState && MPlayerState->GetTeamID() != FGenericTeamId::NoTeam ? FName(FString::Printf(TEXT("Team%d"), MPlayerState->GetTeamID().GetId())) : NAME_None;
+
+	TArray<APlayerStart*> Candidates;
+	for (APlayerStart* PlayerStart : TActorRange<APlayerStart>(GetWorld())) {
+		if (PlayerStart->PlayerStartTag == TeamTag) Candidates.Add(PlayerStart);
+	}
+	if (Candidates.IsEmpty()) {
+		for (APlayerStart* PlayerStart : TActorRange<APlayerStart>(GetWorld())) Candidates.Add(PlayerStart);
+	}
+
+	AActor* BestStart = nullptr;
+	float BestDistanceSquared = -1.f;
+
+	for (APlayerStart* PlayerStart : Candidates) {
+		float NearestDistanceSquared = TNumericLimits<float>::Max();
+		for (const AMCharacter* Character : TActorRange<AMCharacter>(GetWorld())) {
+			if (Character->IsDead()) continue;
+			NearestDistanceSquared = FMath::Min(NearestDistanceSquared, FVector::DistSquared(Character->GetActorLocation(), PlayerStart->GetActorLocation()));
+		}
+		if (NearestDistanceSquared > BestDistanceSquared) {
+			BestDistanceSquared = NearestDistanceSquared;
+			BestStart = PlayerStart;
+		}
+	}
+	return BestStart ? BestStart : Super::ChoosePlayerStart_Implementation(Player);
+}
+
+bool AMGameMode::ShouldSpawnAtStartSpot(AController* Player) {
+	/** Always chooses a new player start, because by default the engine reuses the start of the first spawn on every respawn. */
+	return false;
 }
 
 void AMGameMode::CharacterKilled(AMCharacter* Victim, AController* Killer) {

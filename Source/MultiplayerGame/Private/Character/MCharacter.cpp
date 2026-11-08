@@ -128,8 +128,17 @@ void AMCharacter::OnRep_PlayerState(){
 }
 
 void AMCharacter::OnRep_TeamID(){
-	/** Logs the team received from the server on a client. */
+	/** Logs the team received from the server on a client and gives the character the look of its team. */
 	LogReceivedTeam();
+	ApplyTeamMesh();
+}
+
+void AMCharacter::ApplyTeamMesh(){
+	/** Swaps the mesh for the skin of the character's team, so that allies and enemies are easy to tell apart; only visual, so a dedicated server skips it. */
+	if (GetNetMode() == NM_DedicatedServer || !TeamMeshes.IsValidIndex(TeamID.GetId())) return;
+
+	USkeletalMesh* TeamMesh = TeamMeshes[TeamID.GetId()];
+	if (TeamMesh && GetMesh()->GetSkeletalMeshAsset() != TeamMesh) GetMesh()->SetSkeletalMeshAsset(TeamMesh);
 }
 
 void AMCharacter::LogReceivedTeam(){
@@ -214,7 +223,7 @@ bool AMCharacter::IsAttackReady(float Tolerance) const{
 }
 
 void AMCharacter::PerformAttack(){
-	/** Sweeps a sphere in front of the character and damages every enemy character it hits. Server only. */
+	/** Sweeps a sphere in front of the character and damages every enemy character it hits; bots deal reduced damage. Server only. */
 	Multicast_PlayAttack();
 
 	const FVector Start = GetActorLocation();
@@ -227,14 +236,17 @@ void AMCharacter::PerformAttack(){
 	GetWorld()->SweepMultiByObjectType(Hits, Start, End, FQuat::Identity,
 		FCollisionObjectQueryParams(ECC_Pawn), FCollisionShape::MakeSphere(AttackRadius), QueryParams);
 
+	const APlayerState* OwnerPlayerState = GetPlayerState();
+	const float Damage = OwnerPlayerState && OwnerPlayerState->IsABot() ? AttackDamage * BotDamageMultiplier : AttackDamage;
+
 	TSet<AActor*> DamagedActors;
 	for (const FHitResult& Hit : Hits){
 		AMCharacter* Target = Cast<AMCharacter>(Hit.GetActor());
 		if (!Target || DamagedActors.Contains(Target) || Target->IsDead() || Target->GetGenericTeamId() == TeamID) continue;
 
 		DamagedActors.Add(Target);
-		UGameplayStatics::ApplyDamage(Target, AttackDamage, GetController(), this, UDamageType::StaticClass());
-		UE_LOG(LogMCombat, Log, TEXT("[Server] %s hit %s for %.0f damage"), *GetOwnerName(), *Target->GetOwnerName(), AttackDamage);
+		UGameplayStatics::ApplyDamage(Target, Damage, GetController(), this, UDamageType::StaticClass());
+		UE_LOG(LogMCombat, Log, TEXT("[Server] %s hit %s for %.0f damage"), *GetOwnerName(), *Target->GetOwnerName(), Damage);
 	}
 
 	if (DamagedActors.IsEmpty()){

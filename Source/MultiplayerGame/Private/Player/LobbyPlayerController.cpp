@@ -2,6 +2,7 @@
 
 
 #include "Player/LobbyPlayerController.h"
+#include "Bot/MBotComponent.h"
 #include "Cheats/MCheatManager.h"
 #include "Framework/MGameState.h"
 #include "GameFramework/PlayerState.h"
@@ -13,9 +14,10 @@ ALobbyPlayerController::ALobbyPlayerController() {
 }
 
 void ALobbyPlayerController::BeginPlay() {
-	/** Creates the cheat manager on the local client so the lobby test commands can be used. */
+	/** Creates the cheat manager on the local client so the lobby test commands can be used, and starts the bot on a bot client. */
 	Super::BeginPlay();
 	if (IsLocalController()) AddCheats(true);
+	UMBotComponent::AddToController(this);
 }
 
 void ALobbyPlayerController::Server_RequestSlotSelectionChange_Implementation(uint8 SlotID) {

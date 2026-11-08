@@ -5,7 +5,8 @@
 # Usage:
 #   ./logs.sh                 # server log
 #   ./logs.sh client_1        # log of client 1
-#   ./logs.sh all             # server and all clients, one after another
+#   ./logs.sh bot_1           # log of bot 1
+#   ./logs.sh all             # server, all clients and bots, one after another
 #   ./logs.sh server -f       # follow the server log live
 #   ./logs.sh server --run 2026-10-23_20-36-37   # a specific run instead of the latest
 
@@ -67,7 +68,8 @@ show() {
 }
 
 if [[ "$TARGET" == "all" ]]; then
-    for LOG in "$RUN"/server.log "$RUN"/client_*.log; do
+    for LOG in "$RUN"/server.log "$RUN"/client_*.log "$RUN"/bot_*.log; do
+        [[ -f "$LOG" ]] || continue
         show "$(basename "$LOG" .log)"
         echo
     done

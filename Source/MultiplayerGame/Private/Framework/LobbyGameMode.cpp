@@ -14,8 +14,12 @@ ALobbyGameMode::ALobbyGameMode() {
 }
 
 void ALobbyGameMode::BeginPlay() {
-	/** Starts a timer that checks the lobby state once per second. */
+	/** Reads the number of players to wait for from the -ExpectedPlayers= server argument and starts a timer that checks the lobby state once per second. */
 	Super::BeginPlay();
+
+	if (FParse::Value(FCommandLine::Get(), TEXT("ExpectedPlayers="), ExpectedPlayerCount)) {
+		UE_LOG(LogMLobby, Log, TEXT("[Server] Waiting for %d players before the start"), ExpectedPlayerCount);
+	}
 	GetWorldTimerManager().SetTimer(StartCountdownTimer, this, &ALobbyGameMode::UpdateStartCountdown, 1.f, true);
 }
 
@@ -38,7 +42,8 @@ void ALobbyGameMode::UpdateStartCountdown() {
 	AMGameState* MGameState = GetGameState<AMGameState>();
 	if (!MGameState) return;
 
-	if (!MGameState->CanStart()) {
+	const bool bAllPlayersJoined = MGameState->PlayerArray.Num() >= ExpectedPlayerCount;
+	if (!bAllPlayersJoined || !MGameState->CanStart()) {
 		if (MGameState->GetStartCountdown() >= 0) UE_LOG(LogMLobby, Log, TEXT("[Server] Countdown cancelled, start conditions are no longer met"));
 		MGameState->SetStartCountdown(-1);
 		return;

@@ -1,35 +1,37 @@
 #!/usr/bin/env bash
-# Launches a dedicated server and N clients that connect to it locally.
+# Launches a dedicated server, N player clients and M bot clients that connect to it locally.
 #
 # Usage:
 #   ./launch.sh                          # server + 2 packaged clients
 #   ./launch.sh -c 4                     # server + 4 clients in a grid
 #   ./launch.sh --mode editor            # current code via UnrealEditor.exe (no packaging)
-#   ./launch.sh -c 8 --visible 0         # clients without rendering (bots / load tests)
+#   ./launch.sh -c 1 --bots 3            # 1 player + 3 bots without windows
+#   ./launch.sh -c 0 --bots 8            # bots only (load tests)
 #   ./launch.sh -c 10 --visible 2        # 2 clients with windows, 8 without rendering
 #   ./launch.sh --all-logs               # full engine logs instead of the filtered ones
 #   ./launch.sh --stop                   # stop everything started by this script
 #
 # Options:
-#   -c, --clients N        number of clients (default 2)
+#   -c, --clients N        number of player clients (default 2)
+#   -b, --bots N           number of bot clients, always without a window (default 0)
 #   -p, --port N           server port (default 7780)
 #   -m, --map PATH         server map (default /Game/Maps/Lobby/L_Lobby)
 #       --mode MODE        packaged | editor (default packaged)
 #       --server-build DIR packaged server folder (default: newest PUBLISH/ServerBuild_*)
 #       --client-build DIR packaged client folder (default: newest PUBLISH/GameBuild_*)
-#       --visible N        only the first N clients get a window, the rest are headless
+#       --visible N        only the first N player clients get a window, the rest are headless
 #       --res WxH          client window size (default 800x450)
 #       --max-fps N        client frame rate cap, 0 = unlimited (default 60)
 #       --server-console   show the server log in its own console window
 #       --timeout N        seconds to wait for the server (default 120)
 #       --server-args STR  extra server arguments
-#       --client-args STR  extra client arguments
 #       --all-logs         write every engine log line (default: project logs, warnings, errors)
 #       --stop             stop processes started by this script
 
 set -euo pipefail
 
 CLIENTS=2
+BOTS=0
 PORT=7780
 MAP="/Game/Maps/Lobby/L_Lobby"
 MODE="packaged"
@@ -43,14 +45,13 @@ MAX_FPS=60
 SERVER_CONSOLE=0
 SERVER_TIMEOUT=120
 SERVER_ARGS=""
-CLIENT_ARGS=""
 ALL_LOGS=0
 STOP=0
 
 # Default log filter: engine messages only from Warning up, project categories in full.
 # Known harmless engine warnings (cursor mapping, stale HLOD actors, slow package loads,
 # the Paragon IK rig asset) are limited to errors.
-LOG_FILTER="global Warning, LogMGame Log, LogMLobby Log, LogMTeam Log, LogMCombat Log, LogLiveCoding off, LogPlayerManagement Error, LogWorldPartition Error, LogStreaming Error, LogLinker Error"
+LOG_FILTER="global Warning, LogMGame Log, LogMLobby Log, LogMTeam Log, LogMCombat Log, LogMBot Log, LogLiveCoding off, LogPlayerManagement Error, LogWorldPartition Error, LogStreaming Error, LogLinker Error"
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_DIR="$(dirname "$SCRIPT_DIR")"
@@ -62,6 +63,7 @@ PID_FILE="$LAUNCH_DIR/pids.txt"
 while [[ $# -gt 0 ]]; do
     case "$1" in
         -c|--clients)     CLIENTS="$2"; shift 2 ;;
+        -b|--bots)        BOTS="$2"; shift 2 ;;
         -p|--port)        PORT="$2"; shift 2 ;;
         -m|--map)         MAP="$2"; shift 2 ;;
         --mode)           MODE="${2,,}"; shift 2 ;;
@@ -73,10 +75,9 @@ while [[ $# -gt 0 ]]; do
         --server-console) SERVER_CONSOLE=1; shift ;;
         --timeout)        SERVER_TIMEOUT="$2"; shift 2 ;;
         --server-args)    SERVER_ARGS="$2"; shift 2 ;;
-        --client-args)    CLIENT_ARGS="$2"; shift 2 ;;
         --all-logs)       ALL_LOGS=1; shift ;;
         --stop)           STOP=1; shift ;;
-        -h|--help)        sed -n '2,29p' "$0" | sed 's/^# \{0,1\}//'; exit 0 ;;
+        -h|--help)        sed -n '2,30p' "$0" | sed 's/^# \{0,1\}//'; exit 0 ;;
         *)                echo "Unknown option: $1 (see --help)" >&2; exit 1 ;;
     esac
 done
@@ -199,7 +200,7 @@ echo
 # Server runs above normal priority so that clients on the same machine do not starve it.
 # Its console is hidden by default: clicking into a console (QuickEdit) pauses log output
 # and freezes the whole server.
-ARGS=("${SERVER_BASE_ARGS[@]}" "$MAP" "-port=$PORT" "-abslog=$(cygpath -w "$SERVER_LOG")" "${LOG_ARGS[@]}")
+ARGS=("${SERVER_BASE_ARGS[@]}" "$MAP" "-port=$PORT" "-ExpectedPlayers=$(( CLIENTS + BOTS ))" "-abslog=$(cygpath -w "$SERVER_LOG")" "${LOG_ARGS[@]}")
 SERVER_WINDOW="Hidden"
 if [[ $SERVER_CONSOLE -eq 1 ]]; then
     ARGS+=(-log)
@@ -262,15 +263,28 @@ if (( VISIBLE_COUNT > 0 && GRID_ROWS * (RES_Y + BORDER_Y) > SCREEN_HEIGHT )); th
     echo "Windows do not fit the screen, using ${RES_X}x${RES_Y} in $GRID_COLUMNS columns"
 fi
 
-for (( i = 1; i <= CLIENTS; i++ )); do
-    CLIENT_LOG="$RUN_DIR/client_$i.log"
-    ARGS=("${CLIENT_BASE_ARGS[@]}" "127.0.0.1:$PORT" "-abslog=$(cygpath -w "$CLIENT_LOG")" "${LOG_ARGS[@]}")
+# Bot clients come after the player clients: ?Bot tells the server that the player is a bot,
+# -bot lets the game on that client drive the character
+for (( i = 1; i <= CLIENTS + BOTS; i++ )); do
+    if (( i > CLIENTS )); then
+        CLIENT_NAME="Bot $(( i - CLIENTS ))"
+        CLIENT_LOG="$RUN_DIR/bot_$(( i - CLIENTS )).log"
+        SERVER_URL="127.0.0.1:$PORT?Bot"
+    else
+        CLIENT_NAME="Client $i"
+        CLIENT_LOG="$RUN_DIR/client_$i.log"
+        SERVER_URL="127.0.0.1:$PORT"
+    fi
+    ARGS=("${CLIENT_BASE_ARGS[@]}" "$SERVER_URL" "-abslog=$(cygpath -w "$CLIENT_LOG")" "${LOG_ARGS[@]}")
 
     # Uncapped clients take several CPU cores each and slow down the server
     (( MAX_FPS > 0 )) && ARGS+=("-ExecCmds=t.MaxFPS $MAX_FPS")
 
     CLIENT_WINDOW="Normal"
-    if (( VISIBLE >= 0 && i > VISIBLE )); then
+    if (( i > CLIENTS )); then
+        ARGS+=(-bot -nullrhi -nosound)
+        CLIENT_WINDOW="Hidden"
+    elif (( VISIBLE >= 0 && i > VISIBLE )); then
         ARGS+=(-nullrhi -nosound)
         CLIENT_WINDOW="Hidden"
     else
@@ -279,10 +293,9 @@ for (( i = 1; i <= CLIENTS; i++ )); do
         WIN_Y=$(( (INDEX / GRID_COLUMNS) * (RES_Y + BORDER_Y) ))
         ARGS+=(-windowed "-ResX=$RES_X" "-ResY=$RES_Y" "-WinX=$WIN_X" "-WinY=$WIN_Y")
     fi
-    [[ -n "$CLIENT_ARGS" ]] && read -r -a EXTRA <<< "$CLIENT_ARGS" && ARGS+=("${EXTRA[@]}")
 
     CLIENT_PID="$(start_process "$CLIENT_WINDOW" Normal "$CLIENT_EXE" "${ARGS[@]}")"
-    echo "Client $i started (PID $CLIENT_PID)"
+    echo "$CLIENT_NAME started (PID $CLIENT_PID)"
     sleep 0.5
 done
 

@@ -25,6 +25,8 @@ private:
 	UPROPERTY(EditDefaultsOnly, Category = "Lobby")
 	FString GameMapPath = TEXT("/Game/Maps/NewMap");
 
+	int32 ExpectedPlayerCount = 0;
+
 	FTimerHandle StartCountdownTimer;
 	void UpdateStartCountdown();
 };

@@ -1,5 +1,6 @@
 #include "Player/MPlayerController.h"
 #include "Blueprint/WidgetLayoutLibrary.h"
+#include "Bot/MBotComponent.h"
 #include "Cheats/MCheatManager.h"
 #include "Framework/MGameState.h"
 #include "Widgets/DeathScreenWidget.h"
@@ -12,7 +13,7 @@ AMPlayerController::AMPlayerController(){
 }
 
 void AMPlayerController::BeginPlay(){
-	/** Switches the local player to game-only input, removes the lobby widgets, shows the match HUD and starts listening for the end of the match. */
+	/** Switches the local player to game-only input, removes the lobby widgets, shows the match HUD, starts listening for the end of the match and starts the bot on a bot client. */
 	Super::BeginPlay();
 
 	if (IsLocalController()){
@@ -34,6 +35,7 @@ void AMPlayerController::BeginPlay(){
 
 		UE_LOG(LogMGame, Verbose, TEXT("[Client] Game input mode set"));
 	}
+	UMBotComponent::AddToController(this);
 }
 
 void AMPlayerController::OnPossess(APawn* NewPawn){

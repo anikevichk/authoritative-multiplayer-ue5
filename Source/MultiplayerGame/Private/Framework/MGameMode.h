@@ -17,7 +17,10 @@ class AMGameMode : public AGameModeBase
 
 public:
 	virtual void BeginPlay() override;
+	virtual FString InitNewPlayer(APlayerController* NewPlayerController, const FUniqueNetIdRepl& UniqueId, const FString& Options, const FString& Portal) override;
 	virtual void PostLogin(APlayerController* NewPlayer) override;
+	virtual AActor* ChoosePlayerStart_Implementation(AController* Player) override;
+	virtual bool ShouldSpawnAtStartSpot(AController* Player) override;
 
 	void CharacterKilled(class AMCharacter* Victim, AController* Killer);
 
@@ -27,6 +30,7 @@ protected:
 
 private:
 	int32 JoinedPlayerCount = 0;
+	int32 JoinedBotCount = 0;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Respawn")
 	float RespawnDelay = 10.f;

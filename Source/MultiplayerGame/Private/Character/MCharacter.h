@@ -39,6 +39,9 @@ public:
 
 	void RequestAttack();
 
+	bool IsDead() const;
+	FORCEINLINE float GetAttackRange() const { return AttackRange; }
+
 private:
 	friend class UMCheatManager;
 
@@ -62,7 +65,6 @@ private:
 
 	bool bDeathHandled = false;
 
-	bool IsDead() const;
 	void HandleDeath();
 	void UpdateHealthBar();
 
@@ -74,6 +76,9 @@ private:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Combat")
 	float AttackDamage = 20.f;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Combat")
+	float BotDamageMultiplier = 0.5f;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Combat")
 	float AttackRange = 150.f;
@@ -109,6 +114,11 @@ private:
 
 	UFUNCTION()
 	void OnRep_TeamID();
+
+	UPROPERTY(EditDefaultsOnly, Category = "Team")
+	TArray<class USkeletalMesh*> TeamMeshes;
+
+	void ApplyTeamMesh();
 
 	FGenericTeamId LoggedTeamID;
 	void LogReceivedTeam();

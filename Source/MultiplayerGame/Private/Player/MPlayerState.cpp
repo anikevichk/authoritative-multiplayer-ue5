@@ -17,11 +17,11 @@ void AMPlayerState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLif
 }
 
 void AMPlayerState::CopyProperties(APlayerState* PlayerState) {
-	/** Keeps the team when the PlayerState is recreated during seamless travel. */
+	/** Keeps the team and the bot flag when the PlayerState is recreated during seamless travel; the engine does not copy the bot flag itself. */
 	Super::CopyProperties(PlayerState);
 
 	if (AMPlayerState* NewPlayerState = Cast<AMPlayerState>(PlayerState)) NewPlayerState->TeamID = TeamID;
-	
+	PlayerState->SetIsABot(IsABot());
 }
 
 void AMPlayerState::SetTeamID(const FGenericTeamId& NewTeamID) {
